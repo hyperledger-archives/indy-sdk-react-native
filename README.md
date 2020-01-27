@@ -1,33 +1,77 @@
-# rn-indy-sdk
+# React Native Indy SDK
 
+React Native Indy SDK wrapper.
 
-## Getting started
+## Installation
 
+with npm:
 `$ npm install rn-indy-sdk --save`
 
-## Linking (for React Native lower than 0.60)
+with Yarn:
+`$ yarn add rn-indy-sdk` 
+
+Link (for React Native lower than 0.60)
 
 `$ react-native link rn-indy-sdk`
 
-## Usage
-```javascript
-import IndySdk from 'rn-indy-sdk';
+## Android
 
-// TODO: What to do with the module?
-IndySdk;
+Make sure there is a min. SDK version setup:
+
+```groovy
+buildscript {
+    ext {
+        ...
+        minSdkVersion = 21
+        ...
+    }
+}
 ```
 
-## Add setup of external storage permissions
+Add Sovrin Maven repository into `android/build.gradle`:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven {
+            url 'https://repo.sovrin.org/repository/maven-public'
+        }
+        ...
+    }
+}
+```
+
+Download Android libindy binaries and copy them into `android/app/src/main/jniLibs`.
+
+## iOS
+
+
+## Usage
+```javascript
+import indy from 'rn-indy-sdk';
+
+await indy.createWallet({ id: 'wallet-123' }, { key: 'key' });
+
+```
+
+## Known Errors
+
+### Add setup of external storage permissions (Android)
+
+I found an error with permission while calling `createWallet` when I was testing this package:
+```
+2020-01-27 16:25:02.300 9955-10044/com.usereactnativeindysdk E/log_panics: thread 'unnamed' panicked at 'called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: "Permission denied" }': libcore/result.rs:945
+```
+
+Modify `onCreate` method in `MainActivity` of your project where you want to use this library in a following way:
 
 ```java
 public class MainActivity extends ReactActivity {
-
   ...
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     ...
-
     File externalFilesDir = getExternalFilesDir(null);
     String path = externalFilesDir.getAbsolutePath();
     System.out.println("externalFilesDir=" + path);
@@ -37,10 +81,10 @@ public class MainActivity extends ReactActivity {
     } catch (ErrnoException e) {
       e.printStackTrace();
     }
-
     ...
   }
-
   ...
 }
 ```
+
+This should resolve the issue with permissions.
