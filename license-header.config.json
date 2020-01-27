@@ -1,0 +1,47 @@
+{
+  "ignore": [
+    ".git",
+    "node_modules",
+    "android/.gradle",
+    "android/.idea",
+    "android/build",
+    "android/gradle",
+    "android/gradlew*",
+    "android/*.iml",
+    "android/local.properties",
+    "ios/IndySdk.xcodeproj",
+    "ios/IndySdk.xcworkspace",
+    ".gitattributes",
+    ".gitignore",
+    ".npmignore",
+    ".prettierrc",
+    "package.json",
+    "yarn.lock",
+    "**/*README.md",
+    "LICENSE.md",
+    "license-header*"
+  ],
+  "license": "license-header",
+  "licenseFormats": {
+    "java|js": {
+      "prepend": "/**",
+      "append": " */\n",
+      "eachLine": {
+        "prepend": " * "
+      }
+    },
+    "h|m|swift|gradle": {
+      "prepend": "//",
+      "append": "//\n",
+      "eachLine": {
+        "prepend": "// "
+      }
+    },
+    "podspec": {
+      "append": "\n",
+      "eachLine": {
+        "prepend": "# "
+      }
+    }
+  }
+}
