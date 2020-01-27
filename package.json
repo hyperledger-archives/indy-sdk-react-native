@@ -1,16 +1,16 @@
 {
   "name": "rn-indy-sdk",
   "title": "React Native Indy SDK Wrapper",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "0.1.1",
+  "description": "React Native Indy SDK Wrapper",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-indy-sdk.git",
-    "baseUrl": "https://github.com/github_account/react-native-indy-sdk"
+    "url": "git+https://github.com/AbsaOSS/rn-indy-sdk.git",
+    "baseUrl": "https://github.com/AbsaOSS/rn-indy-sdk"
   },
   "keywords": [
     "react-native", "Hyperledger Indy", "Hyperledger Aries", "Indy SDK"
