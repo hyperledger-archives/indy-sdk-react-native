@@ -3,9 +3,11 @@
   "title": "React Native Indy SDK Wrapper",
   "version": "0.1.1",
   "description": "React Native Indy SDK Wrapper",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src/ -d lib/",
+    "prepublish": "yarn run build"
   },
   "repository": {
     "type": "git",
@@ -13,7 +15,10 @@
     "baseUrl": "https://github.com/AbsaOSS/rn-indy-sdk"
   },
   "keywords": [
-    "react-native", "Hyperledger Indy", "Hyperledger Aries", "Indy SDK"
+    "react-native",
+    "Hyperledger Indy",
+    "Hyperledger Aries",
+    "Indy SDK"
   ],
   "author": {
     "name": "Jakub Koci",
@@ -27,6 +32,10 @@
     "react-native": ">=0.59.0-rc.0 <1.0.x"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-flow": "^7.8.3",
+    "flow-bin": "^0.117.0",
     "react": "^16.8.3",
     "react-native": "^0.59.10"
   }

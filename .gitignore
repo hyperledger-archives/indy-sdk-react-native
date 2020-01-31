@@ -43,3 +43,6 @@ buck-out/
 
 # NPM package
 rn-indy-sdk-*.tgz
+
+# Build output
+lib
