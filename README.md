@@ -46,6 +46,10 @@ Download Android libindy binaries and copy them into `android/app/src/main/jniLi
 
 ## iOS
 
+Add `Indy.framework` as dependency into your project. Beware that the library needs to be compiled with the same version of Swift as your project.
+
+React Native wrapper for iOS is written in Swift so you need to Create briding header. In Xcode app menu go to File -> New -> File... Select Swift File from dialog window and click Next and Finish. Xcode shoud ask you "Would you like to configure an Objective-C briding header?" then select Create Bridinging Header.
+
 
 ## Usage
 ```javascript
