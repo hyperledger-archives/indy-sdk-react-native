@@ -37,4 +37,155 @@ RCT_EXTERN_METHOD(sampleMethod: (NSString *)stringArgument numberArgument:(nonnu
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+// wallet
+RCT_EXTERN_METHOD(createWallet: (NSString *)config credentials:(NSString *)credentials
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(openWallet: (NSString *)config credentials:(NSString *)credentials
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(closeWallet: (nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(deleteWallet: (NSString *)config credentials:(NSString *)credentials
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(exportWallet: (nonnull NSNumber *)walletHandle exportConfig:(NSString *)exportConfig
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(importWallet: (NSString *)config credentials:(NSString *)credentials importConfig:(NSString *)importConfig
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// did
+RCT_EXTERN_METHOD(createAndStoreMyDid: (NSString *)didJson walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(keyForDid: (NSString *)did poolHandle:(nonnull NSNumber *)poolHandle walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(keyForLocalDid: (NSString *)did walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(storeTheirDid: (NSString *)identityJSON walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// pairwise
+RCT_EXTERN_METHOD(createPairwise: (NSString *)theirDid myDid:(NSString *)myDid metadata:(NSString *)metadata walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(getPairwise: (NSString *)theirDid walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// crypto
+RCT_EXTERN_METHOD(cryptoAnonCrypt: (NSString *)message theirKey:(NSString *)theirKey
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(cryptoAnonDecrypt: (NSArray *)encryptedMessage myKey:(NSString *)myKey walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(cryptoAuthCrypt: (NSString *)message myKey:(NSString *)myKey theirKey:(NSString *)theirKey walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(cryptoAuthDecrypt: (NSArray *)encryptedMessage myKey:(NSString *)myKey walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// pool
+RCT_EXTERN_METHOD(createPoolLedgerConfig: (NSString *)name poolConfig:(NSString *)poolConfig
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(openLedger: (NSString *)name poolConfig:(NSString *)poolConfig
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(setProtocolVersion: (nonnull NSNumber *)protocolVersion
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(closePoolLedger: (nonnull NSNumber *)poolHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// ledger
+
+RCT_EXTERN_METHOD(submitRequest: (NSString *)requestJSON poolHandle:(nonnull NSNumber *)poolHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(buildGetSchemaRequest: (NSString *)submitterDid id:(NSString *)id
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(parseGetSchemaResponse: (NSString *)getSchemaResponse
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(buildGetCredDefRequest: (NSString *)submitterDid id:(NSString *)id
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(parseGetCredDefResponse: (NSString *)getCredDefResponse
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+// anoncreds
+
+RCT_EXTERN_METHOD(proverCreateMasterSecret: (NSString *)masterSecretId walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverCreateCredentialReq: (NSString *)credOfferJSON
+                  credentialDefJSON:(NSString *)credentialDefJSON
+                  proverDID:(NSString *)proverDID
+                  masterSecretID:(NSString *)masterSecretID
+                  walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverStoreCredential: (NSString *)credJson
+                  credID:(NSString *)credID
+                  credReqMetadataJSON:(NSString *)credReqMetadataJSON
+                  credDefJSON:(NSString *)credDefJSON
+                  revRegDefJSON:(NSString *)revRegDefJSON walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverGetCredentials: (NSString *)filter walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverGetCredential: (NSString *)credId walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverGetCredentialsForProofReq: (NSString *)proofReqJSON walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(proverCreateProofForRequest: (NSString *)proofReqJSON
+                  requestedCredentialsJSON:(NSString *)requestedCredentialsJSON
+                  masterSecretID:(NSString *)masterSecretID
+                  schemasJSON:(NSString *)schemasJSON
+                  credentialDefsJSON:(NSString *)credentialDefsJSON
+                  revocStatesJSON:(NSString *)revocStatesJSON
+                  walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 @end
