@@ -37,6 +37,8 @@ import org.hyperledger.indy.sdk.did.Did;
 import org.hyperledger.indy.sdk.did.DidResults;
 import org.hyperledger.indy.sdk.ledger.Ledger;
 import org.hyperledger.indy.sdk.ledger.LedgerResults;
+import org.hyperledger.indy.sdk.non_secrets.WalletRecord;
+import org.hyperledger.indy.sdk.non_secrets.WalletSearch;
 import org.hyperledger.indy.sdk.pairwise.Pairwise;
 import org.hyperledger.indy.sdk.pool.Pool;
 import org.hyperledger.indy.sdk.wallet.Wallet;
@@ -52,12 +54,14 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
 
     private Map<Integer, Wallet> walletMap;
     private Map<Integer, Pool> poolMap;
+    private Map<Integer, WalletSearch> searchMap;
 
     public IndySdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         this.walletMap = new ConcurrentHashMap<>();
         this.poolMap = new ConcurrentHashMap<>();
+        this.searchMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -511,6 +515,131 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Wallet wallet = walletMap.get(walletHandle);
             String credentials = Anoncreds.proverGetCredentials(wallet, filter).get();
             promise.resolve(credentials);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    // non_secrets
+
+    @ReactMethod
+    public void addWalletRecord(int walletHandle, String type, String id, String value, String tagsJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.add(wallet, type, id, value, tagsJson).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void updateWalletRecordValue(int walletHandle, String type, String id, String value, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.updateValue(wallet, type, id, value).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void updateWalletRecordTags(int walletHandle, String type, String id, String tagsJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.updateTags(wallet, type, id, tagsJson).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void addWalletRecordTags(int walletHandle, String type, String id, String tagsJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.addTags(wallet, type, id, tagsJson).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void deleteWalletRecordTags(int walletHandle, String type, String id, String tagNamesJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.deleteTags(wallet, type, id, tagNamesJson).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void deleteWalletRecord(int walletHandle, String type, String id, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletRecord.delete(wallet, type, id).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void getWalletRecord(int walletHandle, String type, String id, String optionsJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String record = WalletRecord.get(wallet, type, id, optionsJson).get();
+            promise.resolve(record);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void openWalletSearch(int walletHandle, String type, String queryJson, String optionsJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletSearch search = WalletSearch.open(wallet, type, queryJson, optionsJson).get();
+            searchMap.put(search.getSearchHandle(), search);
+            promise.resolve(search.getSearchHandle());
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void fetchWalletSearchNextRecords(int walletHandle, int walletSearchHandle, int count, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            WalletSearch search = searchMap.get(walletSearchHandle);
+            String recordsJson = WalletSearch.searchFetchNextRecords(wallet, search, count).get();
+            promise.resolve(recordsJson);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void closeWalletSearch(int walletSearchHandle, Promise promise) {
+        try {
+            WalletSearch search = searchMap.get(walletSearchHandle);
+            WalletSearch.closeSearch(search);
+            searchMap.remove(walletSearchHandle);
+            promise.resolve(null);
         } catch (Exception e) {
             IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
