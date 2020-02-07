@@ -223,13 +223,9 @@ export type Verkey = string
 export type WalletHandle = number
 export type PoolHandle = number
 
-const { IndySdk } = NativeModules
+const { IndyBridge } = NativeModules
 
 export default {
-  sampleMethod(stringArgument, numberArgument) {
-    return IndySdk.sampleMethod(stringArgument, numberArgument)
-  },
-
   // wallet
 
   createWallet(config: Object, credentials: Object): Promise<void> {
@@ -244,7 +240,7 @@ export default {
     if (Platform.OS === 'ios') {
       return IndyBridge.closeWallet(wh.callSomething())
     }
-    return IndyBridge.closeWallet()
+    return IndyBridge.closeWallet(wh)
   },
 
   deleteWallet(config: Object, credentials: Object): Promise<void> {
@@ -258,21 +254,24 @@ export default {
    * because it keeps wallet as a private attribute.
    */
   createAndStoreMyDid(wh: WalletHandle, did: Object): Promise<[Did, Verkey]> {
-    return IndyBridge.createAndStoreMyDid(JSON.stringify(did), wh)
+    if (Platform.OS === 'ios') {
+      return IndyBridge.createAndStoreMyDid(JSON.stringify(did), wh)
+    }
+      return IndyBridge.createAndStoreMyDid(wh, JSON.stringify(did))
   },
 
   keyForDid(poolHandle: PoolHandle, wh: WalletHandle, did: Did): Promise<Verkey> {
     if (Platform.OS === 'ios') {
       return IndyBridge.keyForDid(did, poolHandle, wh)
     }
-    return IndyBridge.keyForDid(did)
+    return IndyBridge.keyForDid(poolHandle, wh, did)
   },
 
   keyForLocalDid(wh: WalletHandle, did: Did): Promise<Verkey> {
     if (Platform.OS === 'ios') {
       return IndyBridge.keyForLocalDid(did, wh)
     }
-    return IndyBridge.keyForLocalDid(did)
+    return IndyBridge.keyForLocalDid(wh, did)
   },
 
   storeTheirDid(wh: WalletHandle, identity: {}) {
@@ -288,49 +287,78 @@ export default {
     if (Platform.OS === 'ios') {
       return IndyBridge.createPairwise(theirDid, myDid, metadata, wh)
     }
-    return IndyBridge.createPairwise(theirDid, myDid, metadata)
+    return IndyBridge.createPairwise(wh, theirDid, myDid, metadata)
   },
 
   async getPairwise(wh: WalletHandle, theirDid: Did): Promise<Object> {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndyBridge.getPairwise(theirDid, wh))
     }
-    return JSON.parse(await IndyBridge.getPairwise(theirDid))
+    return JSON.parse(await IndyBridge.getPairwise(wh, theirDid))
   },
 
   // crypto
 
-  cryptoAnonCrypt(recipientVk: Verkey, messageRaw: Uint8Array): Promise<Array<number>> {
+  async cryptoAnonCrypt(recipientVk: Verkey, messageRaw: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
       return IndyBridge.cryptoAnonCrypt(messageRaw, recipientVk)
     }
 
-    return IndyBridge.cryptoAnonCrypt(recipientVk, messageRaw)
+    return Buffer.from(await IndyBridge.cryptoAnonCrypt(recipientVk, Array.from(messageRaw)))
   },
 
-  cryptoAnonDecrypt(wh: WalletHandle, recipientVk: Verkey, encryptedMsg: Array<number>): Promise<Array<number>> {
+  async cryptoAnonDecrypt(wh: WalletHandle, recipientVk: Verkey, encryptedMsg: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
       return IndyBridge.cryptoAnonDecrypt(encryptedMsg, recipientVk, wh)
     }
-    return IndyBridge.cryptoAnonDecrypt(recipientVk, encryptedMsg)
+    return Buffer.from(await IndyBridge.cryptoAnonDecrypt(wh, recipientVk, Array.from(encryptedMsg)))
   },
 
-  cryptoAuthCrypt(wh: WalletHandle, senderVk: Verkey, recipientVk: Verkey, messageRaw: string): Promise<Array<number>> {
+  async cryptoAuthCrypt(wh: WalletHandle, senderVk: Verkey, recipientVk: Verkey, messageRaw: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
       return IndyBridge.cryptoAuthCrypt(messageRaw, senderVk, recipientVk, wh)
     }
-    return IndyBridge.cryptoAuthCrypt(senderVk, recipientVk, messageRaw)
+    return Buffer.from(await IndyBridge.cryptoAuthCrypt(wh, senderVk, recipientVk, Array.from(messageRaw)))
   },
 
-  cryptoAuthDecrypt(
+  async cryptoAuthDecrypt(
     wh: WalletHandle,
     recipientVk: Verkey,
-    encryptedMsgRaw: Array<number>
-  ): Promise<[Verkey, Array<number>]> {
+    encryptedMsgRaw: Buffer
+  ): Promise<[Verkey, Buffer]> {
     if (Platform.OS === 'ios') {
       return IndyBridge.cryptoAuthDecrypt(encryptedMsgRaw, recipientVk, wh)
     }
-    return IndyBridge.cryptoAuthDecrypt(recipientVk, encryptedMsgRaw)
+    const [verkey, msg] = await IndyBridge.cryptoAuthDecrypt(recipientVk, Array.from(encryptedMsgRaw))
+    return [verkey, Buffer.from(msg)]
+  },
+
+  async cryptoSign(wh: WalletHandle, signerVk: string, message: Buffer): Promise<Buffer> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return Buffer.from(await IndyBridge.cryptoSign(wh, signerVk, Array.from(message)))
+  },
+
+  cryptoVerify(signerVk: string, message: Buffer, signature: Buffer) {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return IndyBridge.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
+  },
+
+  async packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string): Promise<Buffer> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return Buffer.from(await IndyBridge.packMessage(wh, Array.from(message), receiverKeys, senderVk))
+  },
+
+  async unpackMessage(wh: WalletHandle, jwe: Buffer): Promise<Buffer> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return Buffer.from(await IndyBridge.unpackMessage(wh, Array.from(jwe)))
   },
 
   // pool
@@ -351,43 +379,54 @@ export default {
   },
 
   closePoolLedger(ph: PoolHandle): Promise<void> {
-    if (Platform.OS === 'ios') {
-      return IndyBridge.closePoolLedger(ph)
-    }
-    return IndyBridge.closePoolLedger()
+    return IndyBridge.closePoolLedger(ph)
   },
 
   async submitRequest(poolHandle: PoolHandle, request: LedgerRequest): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndyBridge.submitRequest(request, poolHandle))
     }
-    return JSON.parse(await IndyBridge.submitRequest(request))
+    return JSON.parse(await IndyBridge.submitRequest(ph, JSON.stringify(request)))
   },
 
-  buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
-    return IndyBridge.buildGetSchemaRequest(submitterDid, id)
+  async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      return IndyBridge.buildGetSchemaRequest(submitterDid, id)
+    }
+    return JSON.parse(await IndyBridge.buildGetSchemaRequest(submitterDid, id))
   },
 
-  parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
-    return IndyBridge.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+  async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
+    if (Platform.OS === 'ios') {
+      return IndyBridge.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+    }
+    const [id, schema ] = await IndyBridge.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+    return [id, JSON.parse(schema)]
   },
 
-  buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
-    return IndyBridge.buildGetCredDefRequest(submitterDid, id)
+  async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
+    if (Platform.OS === 'ios') {
+      return IndyBridge.buildGetCredDefRequest(submitterDid, id)
+    }
+    return JSON.parse(await IndyBridge.buildGetCredDefRequest(submitterDid, id))
   },
 
-  parseGetCredDefResponse(getCredDefResponse: LedgerRequestResult): Promise<[CredDefId, CredDef]> {
-    return IndyBridge.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+  async parseGetCredDefResponse(getCredDefResponse: LedgerRequestResult): Promise<[CredDefId, CredDef]> {
+    if (Platform.OS === 'ios') {
+      return IndyBridge.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+    }
+    const [credDefId, credDef ] = await IndyBridge.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+    return [credDefId, JSON.parse(credDef)]
   },
 
   proverCreateMasterSecret(wh: WalletHandle, masterSecretId: ?MasterSecretId): Promise<MasterSecretId> {
     if (Platform.OS === 'ios') {
       return IndyBridge.proverCreateMasterSecret(masterSecretId, wh)
     }
-    return IndyBridge.proverCreateMasterSecret(masterSecretId)
+    return IndyBridge.proverCreateMasterSecret(wh, masterSecretId)
   },
 
-  proverCreateCredentialReq(
+  async proverCreateCredentialReq(
     wh: WalletHandle,
     proverDid: Did,
     credOffer: CredOffer,
@@ -403,12 +442,14 @@ export default {
         wh
       )
     }
-    return IndyBridge.proverCreateCredentialReq(
+    const [credReq, credReqMetadata ] = await IndyBridge.proverCreateCredentialReq(
+      wh,
       proverDid,
       JSON.stringify(credOffer),
       JSON.stringify(credDef),
       masterSecretId
     )
+    return [JSON.parse(credReq), JSON.parse(credReqMetadata)]
   },
 
   proverStoreCredential(
@@ -430,6 +471,7 @@ export default {
       )
     }
     return IndyBridge.proverStoreCredential(
+      wh,
       credId,
       JSON.stringify(credReqMetadata),
       JSON.stringify(cred),
@@ -442,7 +484,7 @@ export default {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndyBridge.proverGetCredentials(JSON.stringify(filter), wh))
     }
-    return JSON.parse(await IndyBridge.proverGetCredentials(JSON.stringify(filter)))
+    return JSON.parse(await IndyBridge.proverGetCredentials(wh, JSON.stringify(filter)))
   },
 
   async proverGetCredential(wh: WalletHandle, credId: CredId): Promise<Credential> {
@@ -455,7 +497,10 @@ export default {
   // TODO Add return flow type.
   // It needs little investigation, because is doesn't seem to be same format as Credential stored in wallet.
   async proverGetCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest) {
-    return JSON.parse(await IndyBridge.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
+    if (Platform.OS == 'ios') {
+      return JSON.parse(await IndyBridge.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
+    }
+    throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
   },
 
   async proverCreateProof(
@@ -467,16 +512,19 @@ export default {
     credentialDefs: CredentialDefs,
     revStates: RevStates = {}
   ): Promise<Proof> {
-    return JSON.parse(
-      await IndyBridge.proverCreateProofForRequest(
-        JSON.stringify(proofReq),
-        JSON.stringify(requestedCredentials),
-        masterSecretName,
-        JSON.stringify(schemas),
-        JSON.stringify(credentialDefs),
-        JSON.stringify(revStates),
-        wh
+    if (Platform.OS == 'ios') {
+      return JSON.parse(
+        await IndyBridge.proverCreateProofForRequest(
+          JSON.stringify(proofReq),
+          JSON.stringify(requestedCredentials),
+          masterSecretName,
+          JSON.stringify(schemas),
+          JSON.stringify(credentialDefs),
+          JSON.stringify(revStates),
+          wh
+        )
       )
-    )
+    }
+    throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
   },
 }
