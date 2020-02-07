@@ -223,6 +223,20 @@ export type Verkey = string
 export type WalletHandle = number
 export type PoolHandle = number
 
+export type WalletRecord = {
+  id: string,
+  type: string,
+  value: string,
+  tags: {},
+}
+
+export type WalletSearchHandle = number
+
+export type WalletRecrods = {
+  totalCount?: string,
+  records?: WalletRecord[],
+}
+
 const { IndyBridge } = NativeModules
 
 export default {
@@ -527,4 +541,77 @@ export default {
     }
     throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
   },
+
+  // non_secrets
+
+  async addWalletRecord(wh: WalletHandle, type: string, id: string, value: string, tags: {}): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.addWalletRecord(wh, type, id, value, JSON.stringify(tags));
+  },
+
+  async updateWalletRecordValue(wh: WalletHandle, type: string, id: string, value: string): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.updateWalletRecordValue(wh, type, id, value);
+  },
+
+  async updateWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.updateWalletRecordTags(wh, type, id, JSON.stringify(tags))
+  },
+
+  async addWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.addWalletRecordTags(wh, type, id, JSON.stringify(tags))
+  },
+
+  async deleteWalletRecordTags(wh: WalletHandle, type: string, id: string, tagNames: []): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.deleteWalletRecordTags(wh, type, id, JSON.stringify(tagNames))
+  },
+
+  async deleteWalletRecord(wh: WalletHandle, type: string, id: string): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.deleteWalletRecord(wh, type, id)
+  },
+
+  async getWalletRecord(wh: WalletHandle, type: string, id: string): Promise<WalletRecord> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return JSON.parse(await IndyBridge.getWalletRecord(wh, type, id))
+  },
+
+  async openWalletSearch(wh: WalletHandle, type: string, query: {}, options: {}): Promise<number> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.openWalletSearch(wh, type, JSON.stringify(query), JSON.stringify(options))
+  },
+
+  async fetchWalletSearchNextRecords(wh: WalletHandle, sh: WalletSearchHandle, count: number): Promise<WalletRecords> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return JSON.parse(await IndyBridge.fetchWalletSearchNextRecords(wh, sh, count))
+  },
+
+  async closeWalletSearch(sh: WalletSearchHandle): Promise<void> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`)
+    }
+    return IndyBridge.closeWalletSearch(sh)
+  },
+
 }
