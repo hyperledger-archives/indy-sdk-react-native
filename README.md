@@ -59,6 +59,8 @@ await indy.createWallet({ id: 'wallet-123' }, { key: 'key' });
 
 ```
 
+You can see example project here https://github.com/jakubkoci/UseReactNativeIndySdk/. It currently shows only usage on Android.
+
 ## Known Errors
 
 ### Add setup of external storage permissions (Android)
