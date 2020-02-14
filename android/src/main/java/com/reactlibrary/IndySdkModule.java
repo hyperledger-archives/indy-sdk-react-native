@@ -66,7 +66,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "IndyBridge";
+        return "IndySdk";
     }
 
     // wallet
@@ -77,7 +77,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Wallet.createWallet(configJson, credentialsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -89,7 +89,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             walletMap.put(wallet.getWalletHandle(), wallet);
             promise.resolve(wallet.getWalletHandle());
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -102,7 +102,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             walletMap.remove(walletHandle);
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -113,7 +113,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Wallet.deleteWallet(configJson, credentialsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -132,7 +132,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             response.pushString(myVerkey);
             promise.resolve(response);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -145,7 +145,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String receivedKey = Did.keyForDid(pool, wallet, did).get();
             promise.resolve(receivedKey);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -157,7 +157,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String receivedKey = Did.keyForLocalDid(wallet, did).get();
             promise.resolve(receivedKey);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -170,7 +170,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Pairwise.createPairwise(wallet, theirDid, myDid, metadata).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -182,7 +182,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String receivedKey = Pairwise.getPairwise(wallet, theirDid).get();
             promise.resolve(receivedKey);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -208,7 +208,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -221,7 +221,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             byte[] decryptedData = Crypto.anonDecrypt(wallet, recipientVk, encryptedMessageBytes).get();
             promise.resolve(decryptedData);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -239,7 +239,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -263,7 +263,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             response.pushArray(decryptedData);
             promise.resolve(response);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -280,7 +280,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -294,7 +294,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
 
             promise.resolve(valid);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -320,7 +320,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -338,7 +338,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -351,7 +351,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Pool.setProtocolVersion(protocolVersion).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -362,7 +362,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Pool.createPoolLedgerConfig(configName, poolConfig).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -374,7 +374,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             poolMap.put(pool.getPoolHandle(), pool);
             promise.resolve(pool.getPoolHandle());
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -387,7 +387,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             poolMap.remove(handle);
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -401,7 +401,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String response = Ledger.submitRequest(pool, requestJson).get();
             promise.resolve(response);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -412,7 +412,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String request = Ledger.buildGetSchemaRequest(submitterDid, id).get();
             promise.resolve(request);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -426,7 +426,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             result.pushString(ledgerResult.getObjectJson());
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -437,7 +437,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String request = Ledger.buildGetCredDefRequest(submitterDid, id).get();
             promise.resolve(request);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -451,7 +451,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             result.pushString(ledgerResult.getObjectJson());
             promise.resolve(result);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -465,7 +465,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String outputMasterSecretId = Anoncreds.proverCreateMasterSecret(wallet, masterSecretId).get();
             promise.resolve(outputMasterSecretId);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -480,7 +480,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             response.pushString(credentialRequestResult.getCredentialRequestMetadataJson());
             promise.resolve(response);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -492,7 +492,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String newCredId = Anoncreds.proverStoreCredential(wallet, credId, credReqMetadataJson, credJson, credDefJson, revRegDefJson).get();
             promise.resolve(newCredId);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -504,7 +504,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String credential = Anoncreds.proverGetCredential(wallet, credId).get();
             promise.resolve(credential);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -516,7 +516,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String credentials = Anoncreds.proverGetCredentials(wallet, filter).get();
             promise.resolve(credentials);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -530,7 +530,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.add(wallet, type, id, value, tagsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -542,7 +542,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.updateValue(wallet, type, id, value).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -554,7 +554,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.updateTags(wallet, type, id, tagsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -566,7 +566,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.addTags(wallet, type, id, tagsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -578,7 +578,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.deleteTags(wallet, type, id, tagNamesJson).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -590,7 +590,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletRecord.delete(wallet, type, id).get();
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -602,7 +602,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String record = WalletRecord.get(wallet, type, id, optionsJson).get();
             promise.resolve(record);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -615,7 +615,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             searchMap.put(search.getSearchHandle(), search);
             promise.resolve(search.getSearchHandle());
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -628,7 +628,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             String recordsJson = WalletSearch.searchFetchNextRecords(wallet, search, count).get();
             promise.resolve(recordsJson);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
@@ -641,16 +641,16 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             searchMap.remove(walletSearchHandle);
             promise.resolve(null);
         } catch (Exception e) {
-            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
 
-    class IndyBridgeRejectResponse {
+    class IndySdkRejectResponse {
         private String code;
         private String message;
 
-        private IndyBridgeRejectResponse(Throwable e) {
+        private IndySdkRejectResponse(Throwable e) {
             // Indy bridge exposed API should return consistently only numeric code
             // When we don't get IndyException and Indy SDK error code we return zero as default
             String code = "0";
