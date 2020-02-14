@@ -237,28 +237,28 @@ export type WalletRecrods = {
   records?: WalletRecord[],
 }
 
-const { IndyBridge } = NativeModules
+const { IndySdk } = NativeModules
 
 export default {
   // wallet
 
   createWallet(config: Object, credentials: Object): Promise<void> {
-    return IndyBridge.createWallet(JSON.stringify(config), JSON.stringify(credentials))
+    return IndySdk.createWallet(JSON.stringify(config), JSON.stringify(credentials))
   },
 
   openWallet(config: Object, credentials: Object): Promise<WalletHandle> {
-    return IndyBridge.openWallet(JSON.stringify(config), JSON.stringify(credentials))
+    return IndySdk.openWallet(JSON.stringify(config), JSON.stringify(credentials))
   },
 
   closeWallet(wh: WalletHandle): Promise<void> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.closeWallet(wh.callSomething())
+      return IndySdk.closeWallet(wh.callSomething())
     }
-    return IndyBridge.closeWallet(wh)
+    return IndySdk.closeWallet(wh)
   },
 
   deleteWallet(config: Object, credentials: Object): Promise<void> {
-    return IndyBridge.deleteWallet(JSON.stringify(config), JSON.stringify(credentials))
+    return IndySdk.deleteWallet(JSON.stringify(config), JSON.stringify(credentials))
   },
 
   // did
@@ -269,28 +269,28 @@ export default {
    */
   createAndStoreMyDid(wh: WalletHandle, did: Object): Promise<[Did, Verkey]> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.createAndStoreMyDid(JSON.stringify(did), wh)
+      return IndySdk.createAndStoreMyDid(JSON.stringify(did), wh)
     }
-      return IndyBridge.createAndStoreMyDid(wh, JSON.stringify(did))
+      return IndySdk.createAndStoreMyDid(wh, JSON.stringify(did))
   },
 
   keyForDid(poolHandle: PoolHandle, wh: WalletHandle, did: Did): Promise<Verkey> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.keyForDid(did, poolHandle, wh)
+      return IndySdk.keyForDid(did, poolHandle, wh)
     }
-    return IndyBridge.keyForDid(poolHandle, wh, did)
+    return IndySdk.keyForDid(poolHandle, wh, did)
   },
 
   keyForLocalDid(wh: WalletHandle, did: Did): Promise<Verkey> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.keyForLocalDid(did, wh)
+      return IndySdk.keyForLocalDid(did, wh)
     }
-    return IndyBridge.keyForLocalDid(wh, did)
+    return IndySdk.keyForLocalDid(wh, did)
   },
 
   storeTheirDid(wh: WalletHandle, identity: {}) {
     if (Platform.OS === 'ios') {
-      return IndyBridge.storeTheirDid(JSON.stringify(identity), wh)
+      return IndySdk.storeTheirDid(JSON.stringify(identity), wh)
     }
     throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
   },
@@ -299,40 +299,40 @@ export default {
 
   createPairwise(wh: WalletHandle, theirDid: Did, myDid: Did, metadata: string = ''): Promise<void> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.createPairwise(theirDid, myDid, metadata, wh)
+      return IndySdk.createPairwise(theirDid, myDid, metadata, wh)
     }
-    return IndyBridge.createPairwise(wh, theirDid, myDid, metadata)
+    return IndySdk.createPairwise(wh, theirDid, myDid, metadata)
   },
 
   async getPairwise(wh: WalletHandle, theirDid: Did): Promise<Object> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndyBridge.getPairwise(theirDid, wh))
+      return JSON.parse(await IndySdk.getPairwise(theirDid, wh))
     }
-    return JSON.parse(await IndyBridge.getPairwise(wh, theirDid))
+    return JSON.parse(await IndySdk.getPairwise(wh, theirDid))
   },
 
   // crypto
 
   async cryptoAnonCrypt(recipientVk: Verkey, messageRaw: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.cryptoAnonCrypt(messageRaw, recipientVk)
+      return IndySdk.cryptoAnonCrypt(messageRaw, recipientVk)
     }
 
-    return Buffer.from(await IndyBridge.cryptoAnonCrypt(recipientVk, Array.from(messageRaw)))
+    return Buffer.from(await IndySdk.cryptoAnonCrypt(recipientVk, Array.from(messageRaw)))
   },
 
   async cryptoAnonDecrypt(wh: WalletHandle, recipientVk: Verkey, encryptedMsg: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.cryptoAnonDecrypt(encryptedMsg, recipientVk, wh)
+      return IndySdk.cryptoAnonDecrypt(encryptedMsg, recipientVk, wh)
     }
-    return Buffer.from(await IndyBridge.cryptoAnonDecrypt(wh, recipientVk, Array.from(encryptedMsg)))
+    return Buffer.from(await IndySdk.cryptoAnonDecrypt(wh, recipientVk, Array.from(encryptedMsg)))
   },
 
   async cryptoAuthCrypt(wh: WalletHandle, senderVk: Verkey, recipientVk: Verkey, messageRaw: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.cryptoAuthCrypt(messageRaw, senderVk, recipientVk, wh)
+      return IndySdk.cryptoAuthCrypt(messageRaw, senderVk, recipientVk, wh)
     }
-    return Buffer.from(await IndyBridge.cryptoAuthCrypt(wh, senderVk, recipientVk, Array.from(messageRaw)))
+    return Buffer.from(await IndySdk.cryptoAuthCrypt(wh, senderVk, recipientVk, Array.from(messageRaw)))
   },
 
   async cryptoAuthDecrypt(
@@ -341,9 +341,9 @@ export default {
     encryptedMsgRaw: Buffer
   ): Promise<[Verkey, Buffer]> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.cryptoAuthDecrypt(encryptedMsgRaw, recipientVk, wh)
+      return IndySdk.cryptoAuthDecrypt(encryptedMsgRaw, recipientVk, wh)
     }
-    const [verkey, msg] = await IndyBridge.cryptoAuthDecrypt(recipientVk, Array.from(encryptedMsgRaw))
+    const [verkey, msg] = await IndySdk.cryptoAuthDecrypt(recipientVk, Array.from(encryptedMsgRaw))
     return [verkey, Buffer.from(msg)]
   },
 
@@ -351,93 +351,93 @@ export default {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return Buffer.from(await IndyBridge.cryptoSign(wh, signerVk, Array.from(message)))
+    return Buffer.from(await IndySdk.cryptoSign(wh, signerVk, Array.from(message)))
   },
 
   cryptoVerify(signerVk: string, message: Buffer, signature: Buffer) {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return IndyBridge.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
+    return IndySdk.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
   },
 
   async packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return Buffer.from(await IndyBridge.packMessage(wh, Array.from(message), receiverKeys, senderVk))
+    return Buffer.from(await IndySdk.packMessage(wh, Array.from(message), receiverKeys, senderVk))
   },
 
   async unpackMessage(wh: WalletHandle, jwe: Buffer): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return Buffer.from(await IndyBridge.unpackMessage(wh, Array.from(jwe)))
+    return Buffer.from(await IndySdk.unpackMessage(wh, Array.from(jwe)))
   },
 
   // pool
 
   createPoolLedgerConfig(poolName: string, poolConfig: string): Promise<void> {
-    return IndyBridge.createPoolLedgerConfig(poolName, poolConfig)
+    return IndySdk.createPoolLedgerConfig(poolName, poolConfig)
   },
 
   openPoolLedger(poolName: string, poolConfig: string): Promise<PoolHandle> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.openLedger(poolName, poolConfig)
+      return IndySdk.openLedger(poolName, poolConfig)
     }
-    return IndyBridge.openPoolLedger(poolName, poolConfig)
+    return IndySdk.openPoolLedger(poolName, poolConfig)
   },
 
   setProtocolVersion(protocolVersion: number): Promise<void> {
-    return IndyBridge.setProtocolVersion(protocolVersion)
+    return IndySdk.setProtocolVersion(protocolVersion)
   },
 
   closePoolLedger(ph: PoolHandle): Promise<void> {
-    return IndyBridge.closePoolLedger(ph)
+    return IndySdk.closePoolLedger(ph)
   },
 
   async submitRequest(poolHandle: PoolHandle, request: LedgerRequest): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndyBridge.submitRequest(request, poolHandle))
+      return JSON.parse(await IndySdk.submitRequest(request, poolHandle))
     }
-    return JSON.parse(await IndyBridge.submitRequest(ph, JSON.stringify(request)))
+    return JSON.parse(await IndySdk.submitRequest(ph, JSON.stringify(request)))
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.buildGetSchemaRequest(submitterDid, id)
+      return IndySdk.buildGetSchemaRequest(submitterDid, id)
     }
-    return JSON.parse(await IndyBridge.buildGetSchemaRequest(submitterDid, id))
+    return JSON.parse(await IndySdk.buildGetSchemaRequest(submitterDid, id))
   },
 
   async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+      return IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     }
-    const [id, schema ] = await IndyBridge.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+    const [id, schema ] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     return [id, JSON.parse(schema)]
   },
 
   async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.buildGetCredDefRequest(submitterDid, id)
+      return IndySdk.buildGetCredDefRequest(submitterDid, id)
     }
-    return JSON.parse(await IndyBridge.buildGetCredDefRequest(submitterDid, id))
+    return JSON.parse(await IndySdk.buildGetCredDefRequest(submitterDid, id))
   },
 
   async parseGetCredDefResponse(getCredDefResponse: LedgerRequestResult): Promise<[CredDefId, CredDef]> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+      return IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
     }
-    const [credDefId, credDef ] = await IndyBridge.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+    const [credDefId, credDef ] = await IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
     return [credDefId, JSON.parse(credDef)]
   },
 
   proverCreateMasterSecret(wh: WalletHandle, masterSecretId: ?MasterSecretId): Promise<MasterSecretId> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.proverCreateMasterSecret(masterSecretId, wh)
+      return IndySdk.proverCreateMasterSecret(masterSecretId, wh)
     }
-    return IndyBridge.proverCreateMasterSecret(wh, masterSecretId)
+    return IndySdk.proverCreateMasterSecret(wh, masterSecretId)
   },
 
   async proverCreateCredentialReq(
@@ -448,7 +448,7 @@ export default {
     masterSecretId: MasterSecretId
   ): Promise<[CredReq, CredReqMetadata]> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.proverCreateCredentialReq(
+      return IndySdk.proverCreateCredentialReq(
         JSON.stringify(credOffer),
         JSON.stringify(credDef),
         proverDid,
@@ -456,7 +456,7 @@ export default {
         wh
       )
     }
-    const [credReq, credReqMetadata ] = await IndyBridge.proverCreateCredentialReq(
+    const [credReq, credReqMetadata ] = await IndySdk.proverCreateCredentialReq(
       wh,
       proverDid,
       JSON.stringify(credOffer),
@@ -475,7 +475,7 @@ export default {
     revRegDef: ?RevRegDef
   ): Promise<CredId> {
     if (Platform.OS === 'ios') {
-      return IndyBridge.proverStoreCredential(
+      return IndySdk.proverStoreCredential(
         JSON.stringify(cred),
         credId,
         JSON.stringify(credReqMetadata),
@@ -484,7 +484,7 @@ export default {
         wh
       )
     }
-    return IndyBridge.proverStoreCredential(
+    return IndySdk.proverStoreCredential(
       wh,
       credId,
       JSON.stringify(credReqMetadata),
@@ -496,23 +496,23 @@ export default {
 
   async proverGetCredentials(wh: WalletHandle, filter: {} = {}): Promise<Credential[]> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndyBridge.proverGetCredentials(JSON.stringify(filter), wh))
+      return JSON.parse(await IndySdk.proverGetCredentials(JSON.stringify(filter), wh))
     }
-    return JSON.parse(await IndyBridge.proverGetCredentials(wh, JSON.stringify(filter)))
+    return JSON.parse(await IndySdk.proverGetCredentials(wh, JSON.stringify(filter)))
   },
 
   async proverGetCredential(wh: WalletHandle, credId: CredId): Promise<Credential> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndyBridge.proverGetCredential(credId, wh))
+      return JSON.parse(await IndySdk.proverGetCredential(credId, wh))
     }
-    return JSON.parse(await IndyBridge.proverGetCredential(credId))
+    return JSON.parse(await IndySdk.proverGetCredential(credId))
   },
 
   // TODO Add return flow type.
   // It needs little investigation, because is doesn't seem to be same format as Credential stored in wallet.
   async proverGetCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest) {
     if (Platform.OS == 'ios') {
-      return JSON.parse(await IndyBridge.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
+      return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
     }
     throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
   },
@@ -528,7 +528,7 @@ export default {
   ): Promise<Proof> {
     if (Platform.OS == 'ios') {
       return JSON.parse(
-        await IndyBridge.proverCreateProofForRequest(
+        await IndySdk.proverCreateProofForRequest(
           JSON.stringify(proofReq),
           JSON.stringify(requestedCredentials),
           masterSecretName,
@@ -548,70 +548,70 @@ export default {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.addWalletRecord(wh, type, id, value, JSON.stringify(tags));
+    return IndySdk.addWalletRecord(wh, type, id, value, JSON.stringify(tags));
   },
 
   async updateWalletRecordValue(wh: WalletHandle, type: string, id: string, value: string): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.updateWalletRecordValue(wh, type, id, value);
+    return IndySdk.updateWalletRecordValue(wh, type, id, value);
   },
 
   async updateWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.updateWalletRecordTags(wh, type, id, JSON.stringify(tags))
+    return IndySdk.updateWalletRecordTags(wh, type, id, JSON.stringify(tags))
   },
 
   async addWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.addWalletRecordTags(wh, type, id, JSON.stringify(tags))
+    return IndySdk.addWalletRecordTags(wh, type, id, JSON.stringify(tags))
   },
 
   async deleteWalletRecordTags(wh: WalletHandle, type: string, id: string, tagNames: []): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.deleteWalletRecordTags(wh, type, id, JSON.stringify(tagNames))
+    return IndySdk.deleteWalletRecordTags(wh, type, id, JSON.stringify(tagNames))
   },
 
   async deleteWalletRecord(wh: WalletHandle, type: string, id: string): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.deleteWalletRecord(wh, type, id)
+    return IndySdk.deleteWalletRecord(wh, type, id)
   },
 
   async getWalletRecord(wh: WalletHandle, type: string, id: string): Promise<WalletRecord> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return JSON.parse(await IndyBridge.getWalletRecord(wh, type, id))
+    return JSON.parse(await IndySdk.getWalletRecord(wh, type, id))
   },
 
   async openWalletSearch(wh: WalletHandle, type: string, query: {}, options: {}): Promise<number> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.openWalletSearch(wh, type, JSON.stringify(query), JSON.stringify(options))
+    return IndySdk.openWalletSearch(wh, type, JSON.stringify(query), JSON.stringify(options))
   },
 
   async fetchWalletSearchNextRecords(wh: WalletHandle, sh: WalletSearchHandle, count: number): Promise<WalletRecords> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return JSON.parse(await IndyBridge.fetchWalletSearchNextRecords(wh, sh, count))
+    return JSON.parse(await IndySdk.fetchWalletSearchNextRecords(wh, sh, count))
   },
 
   async closeWalletSearch(sh: WalletSearchHandle): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndyBridge.closeWalletSearch(sh)
+    return IndySdk.closeWalletSearch(sh)
   },
 
 }
