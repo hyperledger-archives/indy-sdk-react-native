@@ -271,7 +271,7 @@ export default {
     if (Platform.OS === 'ios') {
       return IndySdk.createAndStoreMyDid(JSON.stringify(did), wh)
     }
-      return IndySdk.createAndStoreMyDid(wh, JSON.stringify(did))
+    return IndySdk.createAndStoreMyDid(wh, JSON.stringify(did))
   },
 
   keyForDid(poolHandle: PoolHandle, wh: WalletHandle, did: Did): Promise<Verkey> {
@@ -335,11 +335,7 @@ export default {
     return Buffer.from(await IndySdk.cryptoAuthCrypt(wh, senderVk, recipientVk, Array.from(messageRaw)))
   },
 
-  async cryptoAuthDecrypt(
-    wh: WalletHandle,
-    recipientVk: Verkey,
-    encryptedMsgRaw: Buffer
-  ): Promise<[Verkey, Buffer]> {
+  async cryptoAuthDecrypt(wh: WalletHandle, recipientVk: Verkey, encryptedMsgRaw: Buffer): Promise<[Verkey, Buffer]> {
     if (Platform.OS === 'ios') {
       return IndySdk.cryptoAuthDecrypt(encryptedMsgRaw, recipientVk, wh)
     }
@@ -414,7 +410,7 @@ export default {
     if (Platform.OS === 'ios') {
       return IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     }
-    const [id, schema ] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
+    const [id, schema] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     return [id, JSON.parse(schema)]
   },
 
@@ -429,7 +425,7 @@ export default {
     if (Platform.OS === 'ios') {
       return IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
     }
-    const [credDefId, credDef ] = await IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
+    const [credDefId, credDef] = await IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
     return [credDefId, JSON.parse(credDef)]
   },
 
@@ -456,7 +452,7 @@ export default {
         wh
       )
     }
-    const [credReq, credReqMetadata ] = await IndySdk.proverCreateCredentialReq(
+    const [credReq, credReqMetadata] = await IndySdk.proverCreateCredentialReq(
       wh,
       proverDid,
       JSON.stringify(credOffer),
@@ -548,14 +544,14 @@ export default {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndySdk.addWalletRecord(wh, type, id, value, JSON.stringify(tags));
+    return IndySdk.addWalletRecord(wh, type, id, value, JSON.stringify(tags))
   },
 
   async updateWalletRecordValue(wh: WalletHandle, type: string, id: string, value: string): Promise<void> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return IndySdk.updateWalletRecordValue(wh, type, id, value);
+    return IndySdk.updateWalletRecordValue(wh, type, id, value)
   },
 
   async updateWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
@@ -613,5 +609,4 @@ export default {
     }
     return IndySdk.closeWalletSearch(sh)
   },
-
 }

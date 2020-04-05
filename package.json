@@ -5,6 +5,8 @@
   "description": "React Native Indy SDK Wrapper",
   "main": "lib/index.js",
   "scripts": {
+    "check-format": "prettier --check 'src/**/*.js'",
+    "format": "prettier --write 'src/**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src/ -d lib/",
     "prepublish": "yarn run build"
@@ -36,7 +38,14 @@
     "@babel/core": "^7.8.4",
     "@babel/preset-flow": "^7.8.3",
     "flow-bin": "^0.117.0",
+    "husky": "^4.2.3",
+    "prettier": "^2.0.3",
     "react": "^16.8.3",
     "react-native": "^0.59.10"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run check-format"
+    }
   }
 }
