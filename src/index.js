@@ -510,7 +510,7 @@ export default {
     if (Platform.OS == 'ios') {
       return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
     }
-    throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
+    return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(wh, JSON.stringify(proofRequest)))
   },
 
   async proverCreateProof(
@@ -535,7 +535,17 @@ export default {
         )
       )
     }
-    throw new Error(`Not implemented for platfrom: ${Platform.OS}`)
+    return JSON.parse(
+      await IndySdk.proverCreateProof(
+        wh,
+        JSON.stringify(proofReq),
+        JSON.stringify(requestedCredentials),
+        masterSecretName,
+        JSON.stringify(schemas),
+        JSON.stringify(credentialDefs),
+        JSON.stringify(revStates)
+      )
+    )
   },
 
   // non_secrets

@@ -521,6 +521,54 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void proverGetCredentialsForProofReq(
+      int walletHandle,
+			String proofRequest,
+      Promise promise
+      ) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String credentials = Anoncreds.proverGetCredentialsForProofReq(
+              wallet, 
+              proofRequest
+            ).get();
+            promise.resolve(credentials);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void proverCreateProof(
+      int walletHandle,
+			String proofRequest,
+			String requestedCredentials,
+			String masterSecret,
+			String schemas,
+			String credentialDefs,
+			String revocStates,
+      Promise promise
+      ) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String proofJson = Anoncreds.proverCreateProof(
+              wallet, 
+              proofRequest, 
+              requestedCredentials,
+              masterSecret, 
+              schemas, 
+              credentialDefs, 
+              revocStates
+            ).get();
+            promise.resolve(proofJson);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     // non_secrets
 
     @ReactMethod
