@@ -456,6 +456,39 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void buildGetAttribRequest(String submitterDid, String targetDid, String raw, String hash, String enc, Promise promise) {
+        try {
+            String request = Ledger.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetNymRequest(String submitterDid, String targetDid, Promise promise) {
+        try {
+            String request = Ledger.buildGetNymRequest(submitterDid, targetDid).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void parseGetNymResponse(String response, Promise promise) {
+        try {
+            String parsedResponse = Ledger.parseGetNymResponse(response).get();
+            promise.resolve(parsedResponse);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     // anoncreds
 
     @ReactMethod
