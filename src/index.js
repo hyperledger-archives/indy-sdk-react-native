@@ -237,6 +237,20 @@ export type WalletRecrods = {
   records?: WalletRecord[],
 }
 
+declare enum NymRole {
+  TRUSTEE = 0,
+  STEWARD = 2,
+  TRUST_ANCHOR = 101,
+  ENDORSER = 101,
+  NETWORK_MONITOR = 201,
+}
+
+export type GetNymResponse = {
+  did: Did;
+  verkey: Verkey;
+  role: NymRole;
+}
+
 const { IndySdk } = NativeModules
 
 export default {
@@ -404,6 +418,30 @@ export default {
       return IndySdk.buildGetSchemaRequest(submitterDid, id)
     }
     return JSON.parse(await IndySdk.buildGetSchemaRequest(submitterDid, id))
+  },
+
+  async buildGetAttribRequest(submitterDid: Did | null, targetDid: Did, raw: string | null, hash: string | null, enc: string | null): Promise<LedgerRequest> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`);
+    }
+
+    return JSON.parse(await IndySdk.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc));
+  },
+
+  async buildGetNymRequest(submitterDid: Did | null, targetDid: Did): Promise<LedgerRequest> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`);
+    }
+
+    return JSON.parse(await IndySdk.buildGetNymRequest(submitterDid, targetDid));
+  },
+
+  async parseGetNymResponse(response: LedgerRequestResult): Promise<GetNymResponse> {
+    if (Platform.OS == 'ios') {
+      throw new Error(`Unsupported platform! ${Platform.OS}`);
+    }
+
+    return JSON.parse(await IndySdk.parseGetNymResponse(JSON.stringify(response)));
   },
 
   async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
