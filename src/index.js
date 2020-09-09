@@ -237,13 +237,15 @@ export type WalletRecrods = {
   records?: WalletRecord[],
 }
 
-declare enum NymRole {
-  TRUSTEE = 0,
-  STEWARD = 2,
-  TRUST_ANCHOR = 101,
-  ENDORSER = 101,
-  NETWORK_MONITOR = 201,
+const nymRoleValues = {
+  TRUSTEE: 0,
+  STEWARD:  2,
+  TRUST_ANCHOR: 101,
+  ENDORSER: 101,
+  NETWORK_MONITOR: 201,
 }
+
+export type NymRole = $Keys<typeof nymRoleValues>
 
 export type GetNymResponse = {
   did: Did;
@@ -387,15 +389,18 @@ export default {
 
   // pool
 
-  createPoolLedgerConfig(poolName: string, poolConfig: string): Promise<void> {
-    return IndySdk.createPoolLedgerConfig(poolName, poolConfig)
+  createPoolLedgerConfig(poolName: string, poolConfig: {}): Promise<void> {
+    return IndySdk.createPoolLedgerConfig(poolName, JSON.stringify(poolConfig));
   },
 
-  openPoolLedger(poolName: string, poolConfig: string): Promise<PoolHandle> {
+  openPoolLedger(poolName: string, poolConfig: {} | undefined): Promise<PoolHandle> {
     if (Platform.OS === 'ios') {
-      return IndySdk.openLedger(poolName, poolConfig)
+      return IndySdk.openLedger(poolName, JSON.stringify(poolConfig));
     }
-    return IndySdk.openPoolLedger(poolName, poolConfig)
+    if (poolConfig === undefined) {
+      return IndySdk.openPoolLedger(poolName, null);
+    }
+    return IndySdk.openPoolLedger(poolName, JSON.stringify(poolConfig));
   },
 
   setProtocolVersion(protocolVersion: number): Promise<void> {
@@ -410,7 +415,7 @@ export default {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndySdk.submitRequest(request, poolHandle))
     }
-    return JSON.parse(await IndySdk.submitRequest(ph, JSON.stringify(request)))
+    return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
@@ -630,11 +635,11 @@ export default {
     return IndySdk.deleteWalletRecord(wh, type, id)
   },
 
-  async getWalletRecord(wh: WalletHandle, type: string, id: string): Promise<WalletRecord> {
+  async getWalletRecord(wh: WalletHandle, type: string, id: string, options: {}): Promise<WalletRecord> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported platform! ${Platform.OS}`)
     }
-    return JSON.parse(await IndySdk.getWalletRecord(wh, type, id))
+    return JSON.parse(await IndySdk.getWalletRecord(wh, type, id, JSON.stringify(options)))
   },
 
   async openWalletSearch(wh: WalletHandle, type: string, query: {}, options: {}): Promise<number> {
