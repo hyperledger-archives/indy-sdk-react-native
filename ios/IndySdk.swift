@@ -1,12 +1,12 @@
 //
 // Copyright 2019 ABSA Group Limited
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import Indy
 
 @objc(IndySdk)
 class IndySdk : NSObject {
@@ -165,6 +166,31 @@ class IndySdk : NSObject {
       IndyCrypto.authDecrypt(Data(bytes: encryptedMessage), myKey: myKey, walletHandle: whNumber, completion: completionWithTheirKeyAndData(resolve, reject))
     }
     
+    @objc func cryptoSign(_ wh: NSNumber, signerVk: String, message: Array<UInt8>, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber = Int32(truncating: wh)
+        let messageData = Data(message)
+        IndyCrypto.signMessage(messageData, key: signerVk, walletHandle: whNumber, completion: completionWithData(resolve, reject))
+    }
+    
+    @objc func cryptoVerify(_ signerVk: String, message: Array<UInt8>, signature: Array<UInt8>, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let messageData = Data(message)
+        let signatureData = Data(signature)
+        IndyCrypto.verifySignature(signatureData, forMessage: messageData, key: signerVk, completion: completionWithBool(resolve, reject))
+    }
+    
+    @objc func packMessage(_ wh: NSNumber, message: Array<UInt8>, receiverKeys: String, senderVk: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber = Int32(truncating: wh)
+        let messageData = Data(message)
+        IndyCrypto.packMessage(messageData, receivers: receiverKeys, sender: senderVk, walletHandle: whNumber, completion: completionWithData(resolve, reject))
+    }
+    
+    @objc func unpackMessage(_ wh: NSNumber, jwe: Array<UInt8>, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber = Int32(truncating: wh)
+        let jweData = Data(jwe)
+        IndyCrypto.unpackMessage(jweData, walletHandle: whNumber, completion: completionWithData(resolve, reject))
+    }
+    
+    
     // pool
     
     @objc func setProtocolVersion(_ protocolVersion: NSNumber,
@@ -179,9 +205,10 @@ class IndySdk : NSObject {
       IndyPool.createPoolLedgerConfig(withPoolName: name, poolConfig: poolConfig, completion: completion(resolve, reject))
     }
     
-    @objc func openLedger(_ name: String, poolConfig: String,
+    @objc func openLedger(_ name: String, poolConfig: String?,
                           resolver resolve: @escaping RCTPromiseResolveBlock,
                           rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
       IndyPool.openLedger(withName: name, poolConfig: poolConfig, completion: completionWithIndyHandle(resolve, reject))
     }
     
@@ -232,6 +259,31 @@ class IndySdk : NSObject {
                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
       IndyLedger.parseGetCredDefResponse(getCredDefResponse, completion: completionWithStringPair(resolve, reject))
     }
+    
+    @objc func builGetAttribRequest(_ submitterDid: String,
+                                    targetDid: String,
+                                    raw: String,
+                                    hash: String,
+                                    enc: String,
+                                    resolver resolve: @escaping RCTPromiseResolveBlock,
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        IndyLedger.buildGetAttribRequest(withSubmitterDid: submitterDid, targetDID: targetDid, raw: raw, hash: hash, enc: enc, completion: completionWithString(resolve, reject))
+    }
+    
+    @objc func buildGetNymRequest(_ submitterDid: String?,
+                                 targetDid: String,
+                                 resolver resolve: @escaping RCTPromiseResolveBlock,
+                                 rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        IndyLedger.buildGetNymRequest(withSubmitterDid: submitterDid, targetDID: targetDid, completion: completionWithString(resolve, reject))
+    }
+
+    @objc func parseGetNymResponse(_ response: String,
+                                   resolver resolve: @escaping RCTPromiseResolveBlock,
+                                   rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        IndyLedger.parseGetNymResponse(response, completion: completionWithString(resolve, reject))
+    }
+    
+    
     
     // anoncreds
     
@@ -309,6 +361,59 @@ class IndySdk : NSObject {
         walletHandle: whNumber,
         completion: completionWithString(resolve, reject)
       )
+    }
+    
+    // non_secret
+    
+    @objc func addWalletRecord(_ wh: NSNumber, type: String, id: String, value: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.addRecord(inWallet: whNumber, type: type, id: id, value: value, tagsJson: tags, completion: completion(resolve, reject))
+    }
+    
+    @objc func updateWalletRecordValue(_ wh: NSNumber, type: String, id: String, value: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.updateRecordValue(inWallet: whNumber, type: type, id: id, value: value, completion: completion(resolve, reject))
+    }
+    
+    @objc func updateWalletRecordTags(_ wh: NSNumber, type: String, id: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.updateRecordTags(inWallet: whNumber, type: type, id: id, tagsJson: tags, completion: completion(resolve, reject))
+    }
+    
+    @objc func addWalletRecordTags(_ wh: NSNumber, type: String, id: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.addRecordTags(inWallet: whNumber, type: type, id: id, tagsJson: tags, completion: completion(resolve, reject))
+    }
+    
+    @objc func deleteWalletRecordTags(_ wh: NSNumber, type: String, id: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.deleteRecordTags(inWallet: whNumber, type: type, id: id, tagsNames: tags, completion: completion(resolve, reject))
+    }
+
+    @objc func deleteWalletRecord(_ wh: NSNumber, type: String, id: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.deleteRecord(inWallet: whNumber, type: type, id: id, completion: completion(resolve, reject))
+    }
+    
+    @objc func getWalletRecord(_ wh: NSNumber, type: String, id: String, options: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.getRecordFromWallet(whNumber, type: type, id: id, optionsJson: options, completion: completionWithString(resolve, reject))
+    }
+    
+    @objc func openWalletSearch(_ wh: NSNumber, type: String, query: String, options: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        IndyNonSecrets.openSearch(inWallet: whNumber, type: type, queryJson: query, optionsJson: options, completion: completionWithIndyHandle(resolve, reject))
+    }
+    
+    @objc func fetchWalletSearchNextRecords(_ wh: NSNumber, sh: NSNumber, count: NSNumber, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let whNumber:Int32 = Int32(truncating: wh)
+        let shNumber:Int32 = Int32(truncating: sh)
+        IndyNonSecrets.fetchNextRecords(fromSearch: shNumber, walletHandle: whNumber, count: count, completion: completionWithString(resolve, reject))
+    }
+    
+    @objc func closeWalletSearch(_ sh: NSNumber, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let shNumber:Int32 = Int32(truncating: sh)
+        IndyNonSecrets.closeSearch(withHandle: shNumber, completion: completion(resolve, reject))
     }
     
     // completion functions
@@ -411,6 +516,20 @@ class IndySdk : NSObject {
       return completion
     }
     
+    func completionWithBool(_ resolve: @escaping RCTPromiseResolveBlock,
+                              _ reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?, _ result: Bool) -> Void {
+      func completion(error: Error?,  result: Bool) -> Void {
+        let code = (error! as NSError).code
+        if code != 0 {
+          reject("\(code)", createJsonError(error!, code), error)
+        } else {
+          resolve(result)
+        }
+      }
+      
+      return completion
+    }
+    
     func completionWithStringPair(_ resolve: @escaping RCTPromiseResolveBlock,
                                   _ reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?, _ string1: String?, _ string2: String?) -> Void {
       func completion(error: Error?,  string1: String?, string2: String?) -> Void {
@@ -447,3 +566,4 @@ class IndySdk : NSObject {
     }
     
 }
+

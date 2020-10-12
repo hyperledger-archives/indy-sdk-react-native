@@ -267,9 +267,6 @@ export default {
   },
 
   closeWallet(wh: WalletHandle): Promise<void> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.closeWallet(wh.callSomething())
-    }
     return IndySdk.closeWallet(wh)
   },
 
@@ -360,30 +357,21 @@ export default {
   },
 
   async cryptoSign(wh: WalletHandle, signerVk: string, message: Buffer): Promise<Buffer> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return Buffer.from(await IndySdk.cryptoSign(wh, signerVk, Array.from(message)))
   },
 
-  cryptoVerify(signerVk: string, message: Buffer, signature: Buffer) {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
+  async cryptoVerify(signerVk: string, message: Buffer, signature: Buffer): Promise<Boolean> {
     return IndySdk.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
   },
 
   async packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string): Promise<Buffer> {
     if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+      return Buffer.from(await IndySdk.packMessage(wh, Array.from(message), JSON.stringify(receiverKeys), senderVk))
     }
     return Buffer.from(await IndySdk.packMessage(wh, Array.from(message), receiverKeys, senderVk))
   },
 
   async unpackMessage(wh: WalletHandle, jwe: Buffer): Promise<Buffer> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return Buffer.from(await IndySdk.unpackMessage(wh, Array.from(jwe)))
   },
 
@@ -395,6 +383,9 @@ export default {
 
   openPoolLedger(poolName: string, poolConfig: {} | undefined): Promise<PoolHandle> {
     if (Platform.OS === 'ios') {
+      if (poolConfig === undefined) {
+        return IndySdk.openLedger(poolName, null);
+      }
       return IndySdk.openLedger(poolName, JSON.stringify(poolConfig));
     }
     if (poolConfig === undefined) {
@@ -413,7 +404,7 @@ export default {
 
   async submitRequest(poolHandle: PoolHandle, request: LedgerRequest): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndySdk.submitRequest(request, poolHandle))
+      return JSON.parse(await IndySdk.submitRequest(JSON.stringify(request), poolHandle))
     }
     return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
   },
@@ -426,26 +417,14 @@ export default {
   },
 
   async buildGetAttribRequest(submitterDid: Did | null, targetDid: Did, raw: string | null, hash: string | null, enc: string | null): Promise<LedgerRequest> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`);
-    }
-
     return JSON.parse(await IndySdk.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc));
   },
 
   async buildGetNymRequest(submitterDid: Did | null, targetDid: Did): Promise<LedgerRequest> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`);
-    }
-
     return JSON.parse(await IndySdk.buildGetNymRequest(submitterDid, targetDid));
   },
 
   async parseGetNymResponse(response: LedgerRequestResult): Promise<GetNymResponse> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`);
-    }
-
     return JSON.parse(await IndySdk.parseGetNymResponse(JSON.stringify(response)));
   },
 
@@ -594,72 +573,42 @@ export default {
   // non_secrets
 
   async addWalletRecord(wh: WalletHandle, type: string, id: string, value: string, tags: {}): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.addWalletRecord(wh, type, id, value, JSON.stringify(tags))
   },
 
   async updateWalletRecordValue(wh: WalletHandle, type: string, id: string, value: string): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.updateWalletRecordValue(wh, type, id, value)
   },
 
   async updateWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.updateWalletRecordTags(wh, type, id, JSON.stringify(tags))
   },
 
   async addWalletRecordTags(wh: WalletHandle, type: string, id: string, tags: {}): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.addWalletRecordTags(wh, type, id, JSON.stringify(tags))
   },
 
   async deleteWalletRecordTags(wh: WalletHandle, type: string, id: string, tagNames: []): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.deleteWalletRecordTags(wh, type, id, JSON.stringify(tagNames))
   },
 
   async deleteWalletRecord(wh: WalletHandle, type: string, id: string): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.deleteWalletRecord(wh, type, id)
   },
 
   async getWalletRecord(wh: WalletHandle, type: string, id: string, options: {}): Promise<WalletRecord> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return JSON.parse(await IndySdk.getWalletRecord(wh, type, id, JSON.stringify(options)))
   },
 
   async openWalletSearch(wh: WalletHandle, type: string, query: {}, options: {}): Promise<number> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.openWalletSearch(wh, type, JSON.stringify(query), JSON.stringify(options))
   },
 
   async fetchWalletSearchNextRecords(wh: WalletHandle, sh: WalletSearchHandle, count: number): Promise<WalletRecords> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return JSON.parse(await IndySdk.fetchWalletSearchNextRecords(wh, sh, count))
   },
 
   async closeWalletSearch(sh: WalletSearchHandle): Promise<void> {
-    if (Platform.OS == 'ios') {
-      throw new Error(`Unsupported platform! ${Platform.OS}`)
-    }
     return IndySdk.closeWalletSearch(sh)
   },
 }
