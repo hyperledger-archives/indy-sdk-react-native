@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.license      = "Apache-2.0"
   # s.license    = { :type => "Apache-2.0", :file => "LICENSE.md" }
   s.authors      = { "Your Name" => "yourname@email.com" }
-  s.platforms    = { :ios => "9.0" }
+  s.platforms    = { :ios => "10.0" }
   s.source       = { :git => "https://github.com/AbsaOSS/rn-indy-sdk.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,swift}"

@@ -14,6 +14,9 @@
 // limitations under the License.
 //
 
+
+#import <Indy/Indy.h>
+
 #if __has_include(<React/RCTViewManager.h>)
 #import <React/RCTViewManager.h>
 #elif __has_include("RCTViewManager.h")
@@ -30,6 +33,7 @@
 #else
 #import "React/RCTEventDispatcher.h" // Required when used as a Pod in a Swift project
 #endif
+
 
 @interface RCT_EXTERN_MODULE(IndySdk, NSObject)
 
@@ -105,12 +109,40 @@ RCT_EXTERN_METHOD(cryptoAuthDecrypt: (NSArray *)encryptedMessage myKey:(NSString
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(cryptoSign: (nonnull NSNumber *)wh
+                  signerVk: (NSString *)signerVk
+                  message: (NSArray *)message
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(cryptoVerify: (NSString *)signerVk
+                  message: (NSArray *)message
+                  signature: (NSArray *)signature
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(packMessage: (nonnull NSNumber *)wh
+                  message: (NSArray *)message
+                  receiverKeys: (NSString *)receiverKeys
+                  senderVk: (NSString *)senderVk
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(unpackMessage: (nonnull NSNumber *)wh
+                  jwe: (NSArray *)jwe
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
 // pool
 RCT_EXTERN_METHOD(createPoolLedgerConfig: (NSString *)name poolConfig:(NSString *)poolConfig
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(openLedger: (NSString *)name poolConfig:(NSString *)poolConfig
+RCT_EXTERN_METHOD(openLedger: (NSString *)name poolConfig:(nullable NSString *)poolConfig
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
@@ -143,6 +175,25 @@ RCT_EXTERN_METHOD(buildGetCredDefRequest: (NSString *)submitterDid id:(NSString 
 RCT_EXTERN_METHOD(parseGetCredDefResponse: (NSString *)getCredDefResponse
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(buildGetAttribRequest: (NSString *)submitterDid
+                  targetDid:(NSString *)targetDid
+                  raw:(NSString *)raw
+                  hash:(NSString *)hash
+                  enc:(NSString *)enc
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(buildGetNymRequest: (nullable NSString *)submitterDid
+                  targetDid:(NSString *)targetDid
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(parseGetNymResponse: (NSString *)response
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
 
 // anoncreds
 
@@ -187,5 +238,82 @@ RCT_EXTERN_METHOD(proverCreateProofForRequest: (NSString *)proofReqJSON
                   walletHandle:(nonnull NSNumber *)walletHandle
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
+
+// non_secrets
+RCT_EXTERN_METHOD(addWalletRecord: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  value: (NSString *)value
+                  tags: (NSString *)tags
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(updateWalletRecordValue: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  value: (NSString *)value
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(updateWalletRecordTags: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  tags: (NSString *)tags
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(addWalletRecordTags: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  tags: (NSString *)tags
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(deleteWalletRecordTags: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  tags: (NSString *)tags
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(deleteWalletRecord: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(getWalletRecord: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  id: (NSString *)id
+                  options: (NSString *)options
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(openWalletSearch: (nonnull NSNumber *)wh
+                  type: (NSString *)type
+                  query: (NSString *)query
+                  options: (NSString *)options
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(fetchWalletSearchNextRecords: (nonnull NSNumber *)wh
+                  sh: (nonnull NSNumber *)sh
+                  count: (nonnull NSNumber *)count
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(closeWalletSearch: (nonnull NSNumber *)sh
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
 
 @end
