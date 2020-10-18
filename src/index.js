@@ -239,7 +239,7 @@ export type WalletRecrods = {
 
 const nymRoleValues = {
   TRUSTEE: 0,
-  STEWARD:  2,
+  STEWARD: 2,
   TRUST_ANCHOR: 101,
   ENDORSER: 101,
   NETWORK_MONITOR: 201,
@@ -248,9 +248,9 @@ const nymRoleValues = {
 export type NymRole = $Keys<typeof nymRoleValues>
 
 export type GetNymResponse = {
-  did: Did;
-  verkey: Verkey;
-  role: NymRole;
+  did: Did,
+  verkey: Verkey,
+  role: NymRole,
 }
 
 const { IndySdk } = NativeModules
@@ -378,20 +378,20 @@ export default {
   // pool
 
   createPoolLedgerConfig(poolName: string, poolConfig: {}): Promise<void> {
-    return IndySdk.createPoolLedgerConfig(poolName, JSON.stringify(poolConfig));
+    return IndySdk.createPoolLedgerConfig(poolName, JSON.stringify(poolConfig))
   },
 
   openPoolLedger(poolName: string, poolConfig: {} | undefined): Promise<PoolHandle> {
     if (Platform.OS === 'ios') {
       if (poolConfig === undefined) {
-        return IndySdk.openLedger(poolName, null);
+        return IndySdk.openLedger(poolName, null)
       }
-      return IndySdk.openLedger(poolName, JSON.stringify(poolConfig));
+      return IndySdk.openLedger(poolName, JSON.stringify(poolConfig))
     }
     if (poolConfig === undefined) {
-      return IndySdk.openPoolLedger(poolName, null);
+      return IndySdk.openPoolLedger(poolName, null)
     }
-    return IndySdk.openPoolLedger(poolName, JSON.stringify(poolConfig));
+    return IndySdk.openPoolLedger(poolName, JSON.stringify(poolConfig))
   },
 
   setProtocolVersion(protocolVersion: number): Promise<void> {
@@ -416,16 +416,22 @@ export default {
     return JSON.parse(await IndySdk.buildGetSchemaRequest(submitterDid, id))
   },
 
-  async buildGetAttribRequest(submitterDid: Did | null, targetDid: Did, raw: string | null, hash: string | null, enc: string | null): Promise<LedgerRequest> {
-    return JSON.parse(await IndySdk.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc));
+  async buildGetAttribRequest(
+    submitterDid: Did | null,
+    targetDid: Did,
+    raw: string | null,
+    hash: string | null,
+    enc: string | null
+  ): Promise<LedgerRequest> {
+    return JSON.parse(await IndySdk.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc))
   },
 
   async buildGetNymRequest(submitterDid: Did | null, targetDid: Did): Promise<LedgerRequest> {
-    return JSON.parse(await IndySdk.buildGetNymRequest(submitterDid, targetDid));
+    return JSON.parse(await IndySdk.buildGetNymRequest(submitterDid, targetDid))
   },
 
   async parseGetNymResponse(response: LedgerRequestResult): Promise<GetNymResponse> {
-    return JSON.parse(await IndySdk.parseGetNymResponse(JSON.stringify(response)));
+    return JSON.parse(await IndySdk.parseGetNymResponse(JSON.stringify(response)))
   },
 
   async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
