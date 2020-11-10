@@ -255,7 +255,7 @@ export type GetNymResponse = {
 
 const { IndySdk } = NativeModules
 
-export default {
+const indy = {
   // wallet
 
   createWallet(config: Object, credentials: Object): Promise<void> {
@@ -618,3 +618,33 @@ export default {
     return IndySdk.closeWalletSearch(sh)
   },
 }
+
+function wrapIndyCallWithErrorHandling(func) {
+  return async (...args) => {
+    // Wrap try/catch around indy func
+    try {
+      return await func(...args)
+    } catch (e) {
+      // Try to parse e.message as it should be a
+      // JSON string for Indy errors (at least on Android)
+      // Parsing could also go wrong. In this case we just
+      // want to throw the native side error
+      let parse
+      try {
+        parse = JSON.parse(e.message)
+      } catch {
+        throw e
+      }
+
+      throw parse
+    }
+  }
+}
+
+// This adds indy error handling to all methods to
+// transform the string messages into JSON error objects
+const indyWithErrorHandling = Object.fromEntries(
+  Object.entries(indy).map(([funcName, funcImpl]) => [funcName, wrapIndyCallWithErrorHandling(funcImpl)])
+)
+
+export default indyWithErrorHandling
