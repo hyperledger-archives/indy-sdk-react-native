@@ -29,6 +29,7 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.google.gson.Gson;
 
 import org.hyperledger.indy.sdk.IndyException;
+import org.hyperledger.indy.sdk.ErrorCode;
 import org.hyperledger.indy.sdk.anoncreds.Anoncreds;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults;
 import org.hyperledger.indy.sdk.crypto.Crypto;
@@ -728,30 +729,39 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     class IndySdkRejectResponse {
-        private String code;
+        private String name = "IndyError";
+        private int indyCode;
+        private String indyName;
         private String message;
+        private String indyCurrentErrorJson;
+        private String indyMessage;
+        private String indyBacktrace;
 
         private IndySdkRejectResponse(Throwable e) {
             // Indy bridge exposed API should return consistently only numeric code
             // When we don't get IndyException and Indy SDK error code we return zero as default
-            String code = "0";
+            indyCode = 0;
 
             if (e instanceof ExecutionException) {
                 Throwable cause = e.getCause();
                 if (cause instanceof IndyException) {
                     IndyException indyException = (IndyException) cause;
-                    code = String.valueOf(indyException.getSdkErrorCode());
+                    indyCode = indyException.getSdkErrorCode();
+                    
+                    ErrorCode errorCode = ErrorCode.valueOf(indyCode);
+                    indyName = errorCode.toString();
+                    message = indyName;
+                    // TODO: we can't extract indyCurrentErrorJson directly from indyError
+                    // So we would need to extract it ourelf as done here
+                    // https://github.com/hyperledger/indy-sdk/blob/bafa3bbcca2f7ef4cf5ae2aca01b1dbf7286b924/wrappers/java/src/main/java/org/hyperledger/indy/sdk/IndyException.java#L71-L83
+                    indyMessage = indyException.getSdkMessage();
+                    indyBacktrace = indyException.getSdkBacktrace();
                 }
             }
-
-            String message = e.getMessage();
-
-            this.code = code;
-            this.message = message;
         }
 
         public String getCode() {
-            return code;
+            return String.valueOf(indyCode);
         }
 
         public String getMessage() {
