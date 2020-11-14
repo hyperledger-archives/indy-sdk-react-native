@@ -47,5 +47,8 @@
     "hooks": {
       "pre-push": "npm run check-format"
     }
+  },
+  "dependencies": {
+    "buffer": "^6.0.2"
   }
 }

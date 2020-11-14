@@ -16,6 +16,7 @@
  */
 
 import { NativeModules } from 'react-native'
+import { Buffer } from 'buffer'
 
 export type CredOffer = {
   schema_id: string,
