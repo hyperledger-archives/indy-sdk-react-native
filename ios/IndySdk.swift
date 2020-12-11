@@ -546,18 +546,18 @@ class IndySdk : NSObject {
     
     struct ErrorMessage: Codable {
       var message: String
-      var code: Int
+      var indyCode: Int
     }
     
     func createJsonError(_ error: Error, _ code: Int) -> String! {
       let jsonEncoder = JSONEncoder()
       do {
-        let message = "IndyBridge: \(String(describing: error))"
-        let jsonData = try jsonEncoder.encode(ErrorMessage(message: message, code: code))
+        let message = "IndySdk: \(String(describing: error))"
+        let jsonData = try jsonEncoder.encode(ErrorMessage(message: message, indyCode: code))
         return String(data: jsonData, encoding: .utf8)
       } catch {
         // This code can perhaps replace implementation above
-        return "{\"message\": \"IndyBridge: \(String(describing: error))\"}"
+        return "{\"message\": \"IndySdk: \(String(describing: error))\"}"
       }
     }
     
