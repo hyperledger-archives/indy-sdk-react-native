@@ -444,21 +444,15 @@ const indy = {
   },
 
   async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.buildGetCredDefRequest(submitterDid, id)
-    }
     return JSON.parse(await IndySdk.buildGetCredDefRequest(submitterDid, id))
   },
 
   async parseGetCredDefResponse(getCredDefResponse: LedgerRequestResult): Promise<[CredDefId, CredDef]> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
-    }
     const [credDefId, credDef] = await IndySdk.parseGetCredDefResponse(JSON.stringify(getCredDefResponse))
     return [credDefId, JSON.parse(credDef)]
   },
 
-  proverCreateMasterSecret(wh: WalletHandle, masterSecretId: ?MasterSecretId): Promise<MasterSecretId> {
+  async proverCreateMasterSecret(wh: WalletHandle, masterSecretId: ?MasterSecretId): Promise<MasterSecretId> {
     if (Platform.OS === 'ios') {
       return IndySdk.proverCreateMasterSecret(masterSecretId, wh)
     }
@@ -473,13 +467,14 @@ const indy = {
     masterSecretId: MasterSecretId
   ): Promise<[CredReq, CredReqMetadata]> {
     if (Platform.OS === 'ios') {
-      return IndySdk.proverCreateCredentialReq(
+      const [credReq, credReqMetadata] = await IndySdk.proverCreateCredentialReq(
         JSON.stringify(credOffer),
         JSON.stringify(credDef),
         proverDid,
         masterSecretId,
         wh
       )
+      return [JSON.parse(credReq), JSON.parse(credReqMetadata)]
     }
     const [credReq, credReqMetadata] = await IndySdk.proverCreateCredentialReq(
       wh,

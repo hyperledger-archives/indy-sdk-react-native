@@ -176,11 +176,11 @@ RCT_EXTERN_METHOD(parseGetCredDefResponse: (NSString *)getCredDefResponse
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(buildGetAttribRequest: (NSString *)submitterDid
+RCT_EXTERN_METHOD(buildGetAttribRequest: (nullable NSString *)submitterDid
                   targetDid:(NSString *)targetDid
-                  raw:(NSString *)raw
-                  hash:(NSString *)hash
-                  enc:(NSString *)enc
+                  raw:(nullable NSString *)raw
+                  hash:(nullable NSString *)hash
+                  enc:(nullable NSString *)enc
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
