@@ -260,11 +260,11 @@ class IndySdk : NSObject {
       IndyLedger.parseGetCredDefResponse(getCredDefResponse, completion: completionWithStringPair(resolve, reject))
     }
     
-    @objc func builGetAttribRequest(_ submitterDid: String,
+    @objc func buildGetAttribRequest(_ submitterDid: String?,
                                     targetDid: String,
-                                    raw: String,
-                                    hash: String,
-                                    enc: String,
+                                    raw: String?,
+                                    hash: String?,
+                                    enc: String?,
                                     resolver resolve: @escaping RCTPromiseResolveBlock,
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         IndyLedger.buildGetAttribRequest(withSubmitterDid: submitterDid, targetDID: targetDid, raw: raw, hash: hash, enc: enc, completion: completionWithString(resolve, reject))
