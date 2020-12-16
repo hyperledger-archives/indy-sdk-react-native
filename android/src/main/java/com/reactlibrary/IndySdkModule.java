@@ -51,6 +51,7 @@ import java.util.concurrent.ExecutionException;
 @TargetApi(24)
 public class IndySdkModule extends ReactContextBaseJavaModule {
 
+    private static final String TAG = "IndySdk";
     private final ReactApplicationContext reactContext;
 
     private Map<Integer, Wallet> walletMap;
@@ -756,7 +757,11 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
                     // https://github.com/hyperledger/indy-sdk/blob/bafa3bbcca2f7ef4cf5ae2aca01b1dbf7286b924/wrappers/java/src/main/java/org/hyperledger/indy/sdk/IndyException.java#L71-L83
                     indyMessage = indyException.getSdkMessage();
                     indyBacktrace = indyException.getSdkBacktrace();
+                } else {
+                    Log.e(TAG, "Unhandled non IndyException", e);
                 }
+            } else {
+                Log.e(TAG, "Unhandled non ExecutionException", e);
             }
         }
 
