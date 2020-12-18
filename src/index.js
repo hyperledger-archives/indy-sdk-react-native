@@ -411,9 +411,6 @@ const indy = {
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.buildGetSchemaRequest(submitterDid, id)
-    }
     return JSON.parse(await IndySdk.buildGetSchemaRequest(submitterDid, id))
   },
 
