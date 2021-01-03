@@ -309,6 +309,20 @@ const indy = {
     throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
   },
 
+  async listMyDidsWithMeta(wh) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return IndySdk.listMyDidsWithMeta(wh)
+  },
+    
+  async setDidMetadata(wh, did, metadata) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return IndySdk.setDidMetadata(wh, did, metadata)
+  },
+    
   // pairwise
 
   createPairwise(wh: WalletHandle, theirDid: Did, myDid: Did, metadata: string = ''): Promise<void> {
