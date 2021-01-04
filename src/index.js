@@ -207,6 +207,13 @@ export type CredReq = {
   nonce?: string,
 }
 
+export type CredValues = Record<string, CredValue>
+
+interface CredValue {
+  raw: string;
+  encoded: string; // Raw value as number in string
+}
+
 /**
  * Credential request metadata json for further processing of received form Issuer credential.
  */
@@ -217,12 +224,21 @@ export type CredReqMetadata = {}
  */
 export type RevRegDef = {}
 
+export type RevRegId = string
+export type CredRevocId = string
+export type RevocRegDelta = Record<string, unknown>
+export type TailsWriterConfig = {
+  base_dir: string,
+  uri_pattern: string,
+}
+
 export type Did = string
 
 export type Verkey = string
 
 export type WalletHandle = number
 export type PoolHandle = number
+export type BlobReaderHandle = number
 
 export type WalletRecord = {
   id: string,
@@ -417,11 +433,28 @@ const indy = {
     return IndySdk.closePoolLedger(ph)
   },
 
+  // ledger
+
   async submitRequest(poolHandle: PoolHandle, request: LedgerRequest): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndySdk.submitRequest(JSON.stringify(request), poolHandle))
     }
     return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
+  },
+
+  async signRequest(wh: WalletHandle, submitterDid: Did, request: LedgerRequest): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request)))
+  },
+
+  async buildSchemaRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return JSON.parse(await IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data)))
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
@@ -454,7 +487,14 @@ const indy = {
     return [id, JSON.parse(schema)]
   },
 
-  async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
+  async buildCredDefRequest(submitterDid: Did, credDef: CredDef): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.buildCredDefRequest(submitterDid, JSON.stringify(credDef)))
+  },
+
+  async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
     return JSON.parse(await IndySdk.buildGetCredDefRequest(submitterDid, id))
   },
 
@@ -583,6 +623,36 @@ const indy = {
     )
   },
 
+  async appendTxnAuthorAgreementAcceptanceToRequest(
+    request: LedgerRequest,
+    text: string,
+    version: string,
+    taaDigest: string,
+    mechanism: string,
+    time: number
+  ): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(
+      await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(
+        JSON.stringify(request),
+        text,
+        version,
+        taaDigest,
+        mechanism,
+        time
+      )
+    )
+  },
+
+  async buildGetTxnAuthorAgreementRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.buildGetTxnAuthorAgreementRequest(submitterDid, data))
+  },
+
   // non_secrets
 
   async addWalletRecord(wh: WalletHandle, type: string, id: string, value: string, tags: {}): Promise<void> {
@@ -623,6 +693,80 @@ const indy = {
 
   async closeWalletSearch(sh: WalletSearchHandle): Promise<void> {
     return IndySdk.closeWalletSearch(sh)
+  },
+
+  // Anoncreds
+
+  async issuerCreateSchema(did: Did, name: string, version: string, attributes: string[]): Promise<[SchemaId, Schema]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    const [schemaId, schema] = await IndySdk.issuerCreateSchema(did, name, version, JSON.stringify(attributes))
+    return [schemaId, JSON.parse(schema)]
+  },
+
+  async issuerCreateAndStoreCredentialDef(
+    wh: WalletHandle,
+    issuerDid: Did,
+    schema: Schema,
+    tag: string,
+    signatureType: string,
+    config: {}
+  ): Promise<[CredDefId, CredDef]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    const [credDefId, credDef] = await IndySdk.issuerCreateAndStoreCredentialDef(
+      wh,
+      issuerDid,
+      JSON.stringify(schema),
+      tag,
+      signatureType,
+      JSON.stringify(config)
+    )
+    return [credDefId, JSON.parse(credDef)]
+  },
+
+  async issuerCreateCredentialOffer(wh: WalletHandle, credDefId: CredDefId): Promise<CredOffer> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId))
+  },
+
+  async issuerCreateCredential(
+    wh: WalletHandle,
+    credOffer: CredOffer,
+    credReq: CredReq,
+    credvalues: CredValues,
+    revRegId: RevRegId,
+    blobStorageReaderHandle: BlobReaderHandle
+  ): Promise<[Credential, CredRevocId, RevocRegDelta]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    const [credJson, revocId, revocRegDelta] = await IndySdk.issuerCreateCredential(
+      wh,
+      JSON.stringify(credOffer),
+      JSON.stringify(credReq),
+      JSON.stringify(credvalues),
+      revRegId,
+      blobStorageReaderHandle
+    )
+    return [JSON.parse(credJson), revocId, JSON.parse(revocRegDelta)]
+  },
+
+  // blob_storage
+
+  async openBlobStorageReader(type: string, tailsWriterConfig: TailsWriterConfig): Promise<BlobReaderHandle> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return JSON.parse(await IndySdk.openBlobStorageReader(type, JSON.stringify(tailsWriterConfig)))
   },
 }
 
