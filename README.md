@@ -125,9 +125,26 @@ public class MainActivity extends ReactActivity {
 
 ## iOS
 
-Add `Indy.framework` as dependency into your project. Beware that the library needs to be compiled with the same version of Swift as your project.
+1. Install CocoaPods dependencies:
+```
+pod install --project-directory=ios/
+```
 
-React Native wrapper for iOS is written in Swift so you need to Create briding header. In Xcode app menu go to File -> New -> File... Select Swift File from dialog window and click Next and Finish. Xcode shoud ask you "Would you like to configure an Objective-C briding header?" then select Create Bridinging Header.
+2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy `Indy.frameworks` into that directory.
+
+3. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk. Beware that `Indy.framework` needs to be compiled with the same version of Swift as your project.
+
+4. Add `FRAMEWORK_SEARCH_PATHS` into `rn-indy-sdk.*.xcconfig`:
+
+Debug build:
+```bash
+echo 'FRAMEWORK_SEARCH_PATHS = "${PODS_ROOT}/Frameworks"' >> ios/Pods/Target\ Support\ Files/rn-indy-sdk/rn-indy-sdk.debug.xcconfig
+```
+
+Release build:
+```bash
+echo 'FRAMEWORK_SEARCH_PATHS = "${PODS_ROOT}/Frameworks"' >> ios/Pods/Target\ Support\ Files/rn-indy-sdk/rn-indy-sdk.release.xcconfig
+```
 
 ## Usage
 
