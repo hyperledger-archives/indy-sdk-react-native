@@ -576,7 +576,7 @@ const indy = {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndySdk.proverGetCredential(credId, wh))
     }
-    return JSON.parse(await IndySdk.proverGetCredential(credId))
+    return JSON.parse(await IndySdk.proverGetCredential(wh, credId))
   },
 
   // TODO Add return flow type.
