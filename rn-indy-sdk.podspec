@@ -38,5 +38,7 @@ Pod::Spec.new do |s|
   s.dependency "React"
   # ...
   # s.dependency "..."
+
+  s.pod_target_xcconfig = { "FRAMEWORK_SEARCH_PATHS" => "${PODS_ROOT}/Frameworks" }
 end
 
