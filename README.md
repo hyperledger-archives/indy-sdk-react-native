@@ -130,21 +130,18 @@ public class MainActivity extends ReactActivity {
 pod install --project-directory=ios/
 ```
 
-2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy `Indy.frameworks` into that directory.
+2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy `Indy.framework` into that directory.
 
-3. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk. Beware that `Indy.framework` needs to be compiled with the same version of Swift as your project.
+3. [Optional] Most projects have `ios/Pods` ignored in their `.gitignore`. This is good practice, however this means the framework would need to be added after every clone. To prevent this you can "unignore" the Frameworks directory:
 
-4. Add `FRAMEWORK_SEARCH_PATHS` into `rn-indy-sdk.*.xcconfig`:
-
-Debug build:
-```bash
-echo 'FRAMEWORK_SEARCH_PATHS = "${PODS_ROOT}/Frameworks"' >> ios/Pods/Target\ Support\ Files/rn-indy-sdk/rn-indy-sdk.debug.xcconfig
+```.gitignore
+ios/Pods/
+!ios/Pods/Frameworks
 ```
 
-Release build:
-```bash
-echo 'FRAMEWORK_SEARCH_PATHS = "${PODS_ROOT}/Frameworks"' >> ios/Pods/Target\ Support\ Files/rn-indy-sdk/rn-indy-sdk.release.xcconfig
-```
+4. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk. 
+
+> Beware that the Indy SDK repository does not have the "Build Libraries for Distribution" enabled by default. If that setting is disabled the version of Swift your project uses must be the same as the version of Swift used to compile `Indy.framework`. From Swift 5.0 onwards, building the library with that setting enabled will allow to use an `Indy.framework` build that is compiled with a different version of Swift as your project. See  https://stackoverflow.com/a/63305234/10552895 for more info.
 
 ## Usage
 
