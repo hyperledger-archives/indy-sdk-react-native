@@ -17,6 +17,7 @@
 package com.reactlibrary;
 
 import android.annotation.TargetApi;
+import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
