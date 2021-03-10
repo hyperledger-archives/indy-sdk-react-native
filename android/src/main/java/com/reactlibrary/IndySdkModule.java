@@ -48,6 +48,7 @@ import org.hyperledger.indy.sdk.non_secrets.WalletSearch;
 import org.hyperledger.indy.sdk.pairwise.Pairwise;
 import org.hyperledger.indy.sdk.pool.Pool;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.hyperledger.indy.sdk.anoncreds.CredentialsSearchForProofReq;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,6 +63,10 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     private Map<Integer, Wallet> walletMap;
     private Map<Integer, Pool> poolMap;
     private Map<Integer, WalletSearch> searchMap;
+    private Map<Integer, CredentialsSearchForProofReq> credentialSearchMap;
+
+    // Java wrapper does not expose credentialSearchHandle
+    private int credentialSearchIterator = 0;
 
     public IndySdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -69,6 +74,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         this.walletMap = new ConcurrentHashMap<>();
         this.poolMap = new ConcurrentHashMap<>();
         this.searchMap = new ConcurrentHashMap<>();
+        this.credentialSearchMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -877,6 +883,45 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletSearch search = searchMap.get(walletSearchHandle);
             WalletSearch.closeSearch(search);
             searchMap.remove(walletSearchHandle);
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void proverSearchCredentialsForProofReq(int walletHandle, String proofRequest, String extraQuery, Promise promise) {
+      try {
+            int searchHandle = credentialSearchIterator++; 
+            Wallet wallet = walletMap.get(walletHandle);
+            CredentialsSearchForProofReq search = CredentialsSearchForProofReq.open(wallet, proofRequest, extraQuery).get();
+            credentialSearchMap.put(searchHandle, search);
+            promise.resolve(searchHandle);
+      } catch (Exception e) {
+          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+      }
+    }
+
+    @ReactMethod
+    public void proverFetchCredentialsForProofReq(int searchHandle, String itemReferent, int count, Promise promise) {
+      try {
+          CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
+          String recordsJson = search.fetchNextCredentials(itemReferent, count).get();
+          promise.resolve(recordsJson);
+      } catch (Exception e) {
+          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+      }
+    }
+
+    @ReactMethod
+    public void proverCloseCredentialsSearchForProofReq(int searchHandle, Promise promise) {
+        try {
+            CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
+            search.close();
+            credentialSearchMap.remove(searchHandle);
             promise.resolve(null);
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
