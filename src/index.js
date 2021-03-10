@@ -588,6 +588,31 @@ const indy = {
     return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(wh, JSON.stringify(proofRequest)))
   },
 
+  async proverSearchCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest, extraQuery: {}) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return await IndySdk.proverSearchCredentialsForProofReq(
+      wh,
+      JSON.stringify(proofRequest),
+      JSON.stringify(extraQuery)
+    )
+  },
+
+  async proverFetchCredentialsForProofReq(sh: number, itemReferent: string, count: number) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.proverFetchCredentialsForProofReq(sh, itemReferent, count))
+  },
+
+  async proverCloseCredentialsSearchForProofReq(sh: number) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return await IndySdk.proverCloseCredentialsSearchForProofReq(sh)
+  },
+
   async proverCreateProof(
     wh: WalletHandle,
     proofReq: ProofRequest,
