@@ -28,6 +28,8 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.ErrorCode;
@@ -60,20 +62,19 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     private static final String TAG = "IndySdk";
     private final ReactApplicationContext reactContext;
 
-    private Map<Integer, Wallet> walletMap;
-    private Map<Integer, Pool> poolMap;
-    private Map<Integer, WalletSearch> searchMap;
+    private static  Map<Integer, Wallet> walletMap = new ConcurrentHashMap<>();
+    private static Map<String, Integer> walletIdToHandleMap = new ConcurrentHashMap<>();
+    private static Map<Integer, Pool> poolMap = new ConcurrentHashMap<>();
+    private static Map<String, Integer> poolNameToHandleMap = new ConcurrentHashMap<>();
+    private static Map<Integer, WalletSearch> searchMap = new ConcurrentHashMap<>();
     private Map<Integer, CredentialsSearchForProofReq> credentialSearchMap;
-
     // Java wrapper does not expose credentialSearchHandle
     private int credentialSearchIterator = 0;
+
 
     public IndySdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        this.walletMap = new ConcurrentHashMap<>();
-        this.poolMap = new ConcurrentHashMap<>();
-        this.searchMap = new ConcurrentHashMap<>();
         this.credentialSearchMap = new ConcurrentHashMap<>();
     }
 
@@ -97,8 +98,19 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void openWallet(String configJson, String credentialsJson, Promise promise) {
+        // Retrieve wallet id
+        Gson gson = new Gson();
+        JsonObject config = gson.fromJson(configJson, JsonObject.class);
+        String walletId = config.get("id").getAsString();
+
+        // If wallet is already opened, return open wallet
+        if (walletIdToHandleMap.containsKey(walletId)) {
+            promise.resolve(walletIdToHandleMap.get(walletId));
+        }
+
         try {
             Wallet wallet = Wallet.openWallet(configJson, credentialsJson).get();
+            walletIdToHandleMap.put(walletId, wallet.getWalletHandle());
             walletMap.put(wallet.getWalletHandle(), wallet);
             promise.resolve(wallet.getWalletHandle());
         } catch (Exception e) {
@@ -113,6 +125,15 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Wallet wallet = walletMap.get(walletHandle);
             wallet.closeWallet().get();
             walletMap.remove(walletHandle);
+
+            // Remove wallet id mapping
+            for (Map.Entry<String, Integer> entry : walletIdToHandleMap.entrySet()) {
+                if (entry.getValue().equals(walletHandle)) {
+                    walletIdToHandleMap.remove(entry.getKey());
+                    break;
+                }
+            }
+
             promise.resolve(null);
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
@@ -407,9 +428,15 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void openPoolLedger(String configName, String poolConfig, Promise promise) {
         try {
-            Pool pool = Pool.openPoolLedger(configName, poolConfig).get();
-            poolMap.put(pool.getPoolHandle(), pool);
-            promise.resolve(pool.getPoolHandle());
+            if (poolNameToHandleMap.get(configName) != null){
+                promise.resolve(poolNameToHandleMap.get(configName));
+
+            } else {
+                Pool pool = Pool.openPoolLedger(configName, poolConfig).get();
+                poolMap.put(pool.getPoolHandle(), pool);
+                poolNameToHandleMap.put(configName, pool.getPoolHandle());
+                promise.resolve(pool.getPoolHandle());
+            }
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
@@ -422,6 +449,15 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             Pool pool = poolMap.get(handle);
             pool.closePoolLedger().get();
             poolMap.remove(handle);
+
+            // Remove pool id mapping
+            for (Map.Entry<String, Integer> entry : poolNameToHandleMap.entrySet()) {
+                if (entry.getValue().equals(handle)) {
+                    poolNameToHandleMap.remove(entry.getKey());
+                    break;
+                }
+            }
+            
             promise.resolve(null);
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);

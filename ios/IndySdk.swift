@@ -17,8 +17,15 @@
 import Foundation
 import Indy
 
+struct WalletConfig: Codable {
+    var id: String
+}
+
 @objc(IndySdk)
 class IndySdk : NSObject {
+    
+    private static var walletIdHandleDict: [String: Int32] = [:]
+    private static var poolIdHandleDict: [String: Int32] = [:]
     
     @objc func sampleMethod(_ stringArgument: String, numberArgument: NSNumber,
                             resolver resolve: @escaping RCTPromiseResolveBlock,
@@ -37,16 +44,39 @@ class IndySdk : NSObject {
     @objc func openWallet(_ config: String, credentials: String,
                           resolver resolve: @escaping RCTPromiseResolveBlock,
                           rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let indyWallet = IndyWallet()
-      
-      indyWallet.open(withConfig: config, credentials: credentials, completion: completionWithIndyHandle(resolve, reject))
+        
+        // Test if a wallet handle is already available
+        
+        let decoder = JSONDecoder()
+        guard let configJSON = config.data(using: .utf8),
+              let walletConfig: WalletConfig = try? decoder.decode(WalletConfig.self, from: configJSON)
+        else {
+            reject("-1000", "Non parseable config: \(config)", NSError(domain: "Indy", code: -1000, userInfo: nil))
+            return;
+        }
+        
+        // If wallet is already opened, return the wallet handle
+        if let walletHandle = IndySdk.walletIdHandleDict[walletConfig.id] {
+            resolve(walletHandle)
+        }
+        else{
+            let indyWallet = IndyWallet()
+            indyWallet.open(withConfig: config, credentials: credentials, completion: completionWithWalletHandle(resolve, reject, walletConfig.id))
+        }
     }
     
     @objc func closeWallet(_ walletHandle: NSNumber,
                          resolver resolve: @escaping RCTPromiseResolveBlock,
                          rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+        let whNumber:Int32  = Int32(truncating: walletHandle)
       let indyWallet = IndyWallet()
+        
+      // Remove wallet handle map
+        for (walletId, walletHandle) in IndySdk.walletIdHandleDict {
+          if walletHandle == whNumber {
+            IndySdk.walletIdHandleDict.removeValue(forKey: walletId)
+          }
+      }
       
       indyWallet.close(withHandle: whNumber, completion: completion(resolve, reject))
     }
@@ -62,7 +92,7 @@ class IndySdk : NSObject {
     @objc func exportWallet(_ walletHandle: NSNumber, exportConfig: String,
                            resolver resolve: @escaping RCTPromiseResolveBlock,
                            rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating: walletHandle)
       let indyWallet = IndyWallet()
       
       indyWallet.export(withHandle: whNumber, exportConfigJson: exportConfig, completion: completion(resolve, reject))
@@ -80,7 +110,7 @@ class IndySdk : NSObject {
     @objc func createAndStoreMyDid(_ didJson: String!, walletHandle: NSNumber,
                                    resolver resolve: @escaping RCTPromiseResolveBlock,
                                    rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating: walletHandle)
       
       func completion(error: Error?, did: String?, verkey: String?) -> Void {
         let code = (error! as NSError).code
@@ -97,8 +127,8 @@ class IndySdk : NSObject {
     @objc func keyForDid(_ did: String!, poolHandle: NSNumber, walletHandle: NSNumber,
                                    resolver resolve: @escaping RCTPromiseResolveBlock,
                                    rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let phNumber:Int32  = Int32(poolHandle)
-      let whNumber:Int32  = Int32(walletHandle)
+      let phNumber:Int32  = Int32(truncating:poolHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       
       IndyDid.key(forDid: did, poolHandle: phNumber, walletHandle: whNumber, completion: completionWithVerkey(resolve, reject))
     }
@@ -106,7 +136,7 @@ class IndySdk : NSObject {
     @objc func keyForLocalDid(_ did: String!, walletHandle: NSNumber,
                               resolver resolve: @escaping RCTPromiseResolveBlock,
                               rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       
       IndyDid.key(forLocalDid: did, walletHandle: whNumber, completion: completionWithVerkey(resolve, reject))
     }
@@ -114,7 +144,7 @@ class IndySdk : NSObject {
     @objc func storeTheirDid(_ identityJSON: String!, walletHandle: NSNumber,
                               resolver resolve: @escaping RCTPromiseResolveBlock,
                               rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       
       IndyDid.storeTheirDid(identityJSON, walletHandle: whNumber, completion: completion(resolve, reject))
     }
@@ -122,7 +152,7 @@ class IndySdk : NSObject {
     @objc func createPairwise(_ theirDid: String!, myDid: String!, metadata: String!, walletHandle: NSNumber,
                              resolver resolve: @escaping RCTPromiseResolveBlock,
                              rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       
       IndyPairwise.createPairwise(forTheirDid: theirDid, myDid: myDid, metadata: metadata, walletHandle: whNumber, completion: completion(resolve, reject))
     }
@@ -130,7 +160,7 @@ class IndySdk : NSObject {
     @objc func getPairwise(_ theirDid: String!, walletHandle: NSNumber,
                            resolver resolve: @escaping RCTPromiseResolveBlock,
                            rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyPairwise.getForTheirDid(theirDid, walletHandle: whNumber, completion: completionWithPairwiseInfo(resolve, reject))
     }
     
@@ -146,7 +176,7 @@ class IndySdk : NSObject {
     @objc func cryptoAnonDecrypt(_ encryptedMessage: Array<UInt8>, myKey: String!, walletHandle: NSNumber,
                                  resolver resolve: @escaping RCTPromiseResolveBlock,
                                  rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       let encryptedMessageData = Data(bytes: encryptedMessage)
       IndyCrypto.anonDecrypt(encryptedMessageData, myKey: myKey, walletHandle: whNumber, completion: completionWithData(resolve, reject))
     }
@@ -154,14 +184,14 @@ class IndySdk : NSObject {
     @objc func cryptoAuthCrypt(_ message: String, myKey: String!, theirKey: String!, walletHandle: NSNumber,
                                resolver resolve: @escaping RCTPromiseResolveBlock,
                                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyCrypto.authCrypt(message.data(using: .utf8), myKey: myKey, theirKey: theirKey, walletHandle: whNumber, completion: completionWithData(resolve, reject))
     }
     
     @objc func cryptoAuthDecrypt(_ encryptedMessage: Array<UInt8>, myKey: String!, walletHandle: NSNumber,
                                  resolver resolve: @escaping RCTPromiseResolveBlock,
                                  rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       
       IndyCrypto.authDecrypt(Data(bytes: encryptedMessage), myKey: myKey, walletHandle: whNumber, completion: completionWithTheirKeyAndData(resolve, reject))
     }
@@ -208,15 +238,27 @@ class IndySdk : NSObject {
     @objc func openLedger(_ name: String, poolConfig: String?,
                           resolver resolve: @escaping RCTPromiseResolveBlock,
                           rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        if let poolHandle = IndySdk.poolIdHandleDict[name] {
+            resolve(poolHandle)
+        }
+        else{
+            IndyPool.openLedger(withName: name, poolConfig: poolConfig, completion: completionWithPoolHandle(resolve, reject, name))
+        }
         
-      IndyPool.openLedger(withName: name, poolConfig: poolConfig, completion: completionWithIndyHandle(resolve, reject))
     }
     
     @objc func closePoolLedger(_ poolHandle: NSNumber,
                                resolver resolve: @escaping RCTPromiseResolveBlock,
                                rejecter reject: @escaping RCTPromiseRejectBlock) {
-      let phNumber:Int32  = Int32(poolHandle)
-      IndyPool.closeLedger(withHandle: phNumber, completion: completion(resolve, reject))
+        let phNumber:Int32  = Int32(truncating: poolHandle)
+        
+        let handleDict = IndySdk.poolIdHandleDict.filter { $0.value == poolHandle.intValue }
+        // Remove value for name
+        if let name = handleDict.first?.key {
+            IndySdk.poolIdHandleDict.removeValue(forKey: name)
+        }
+        
+        IndyPool.closeLedger(withHandle: phNumber, completion: completion(resolve, reject))
     }
     
     // ledger
@@ -224,7 +266,7 @@ class IndySdk : NSObject {
     @objc func submitRequest(_ requestJSON: String, poolHandle: NSNumber,
                              resolver resolve: @escaping RCTPromiseResolveBlock,
                              rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let phNumber:Int32  = Int32(poolHandle)
+      let phNumber:Int32  = Int32(truncating:poolHandle)
       IndyLedger.submitRequest(requestJSON, poolHandle: phNumber, completion: completionWithString(resolve, reject))
     }
     
@@ -290,7 +332,7 @@ class IndySdk : NSObject {
     @objc func proverCreateMasterSecret(_ masterSecretId: String, walletHandle: NSNumber,
                                        resolver resolve: @escaping RCTPromiseResolveBlock,
                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
 
       IndyAnoncreds.proverCreateMasterSecret(
         !masterSecretId.isEmpty ? masterSecretId : nil,
@@ -302,7 +344,7 @@ class IndySdk : NSObject {
     @objc func proverCreateCredentialReq(_ credOfferJSON: String, credentialDefJSON: String, proverDID: String, masterSecretID: String, walletHandle: NSNumber,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverCreateCredentialReq(
         forCredentialOffer: credOfferJSON,
         credentialDefJSON: credentialDefJSON,
@@ -316,7 +358,7 @@ class IndySdk : NSObject {
     @objc func proverStoreCredential(_ credJson: String, credID: String, credReqMetadataJSON: String, credDefJSON: String, revRegDefJSON: String, walletHandle: NSNumber,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverStoreCredential(
         credJson,
         credID: !credID.isEmpty ? credID : nil,
@@ -329,28 +371,28 @@ class IndySdk : NSObject {
     @objc func proverGetCredentials(_ filterJSON: String, walletHandle: NSNumber,
                                    resolver resolve: @escaping RCTPromiseResolveBlock,
                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverGetCredentials(forFilter: filterJSON, walletHandle: whNumber, completion: completionWithString(resolve, reject))
     }
     
     @objc func proverGetCredential(_ credId: String, walletHandle: NSNumber,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverGetCredential(withId: credId, walletHandle: whNumber, completion: completionWithString(resolve, reject))
     }
     
     @objc func proverGetCredentialsForProofReq(_ proofReqJSON: String, walletHandle: NSNumber,
                                    resolver resolve: @escaping RCTPromiseResolveBlock,
                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverGetCredentials(forProofReq: proofReqJSON, walletHandle: whNumber, completion: completionWithString(resolve, reject))
     }
     
     @objc func proverCreateProofForRequest(_ proofReqJSON: String, requestedCredentialsJSON: String, masterSecretID: String, schemasJSON: String, credentialDefsJSON: String, revocStatesJSON: String, walletHandle: NSNumber,
                                                resolver resolve: @escaping RCTPromiseResolveBlock,
                                                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(walletHandle)
+      let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverCreateProof(
         forRequest: proofReqJSON,
         requestedCredentialsJSON: requestedCredentialsJSON,
@@ -430,6 +472,38 @@ class IndySdk : NSObject {
       }
       
       return completion
+    }
+    
+    func completionWithWalletHandle(_ resolve: @escaping RCTPromiseResolveBlock,
+                                    _ reject: @escaping RCTPromiseRejectBlock, _ walletId: String) -> (_ error: Error?, _ wh: IndyHandle) -> Void {
+        func completion(error: Error?,  wh: IndyHandle) -> Void {
+          let code = (error! as NSError).code
+          if code != 0 {
+            reject("\(code)", createJsonError(error!, code), error)
+          } else {
+            IndySdk.walletIdHandleDict[walletId] = wh
+            resolve(wh)
+          }
+        }
+        
+        return completion
+        
+    }
+    
+    func completionWithPoolHandle(_ resolve: @escaping RCTPromiseResolveBlock,
+                                  _ reject: @escaping RCTPromiseRejectBlock,
+                                  _ poolName: String) -> (_ error: Error?, _ wh: IndyHandle) -> Void {
+        func completion(error: Error?,  ih: IndyHandle) -> Void {
+            let code = (error! as NSError).code
+            if code != 0 {
+                reject("\(code)", createJsonError(error!, code), error)
+            } else {
+                IndySdk.poolIdHandleDict[poolName] = ih
+                resolve(ih)
+            }
+        }
+        
+        return completion
     }
     
     func completionWithIndyHandle(_ resolve: @escaping RCTPromiseResolveBlock,
