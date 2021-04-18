@@ -648,6 +648,28 @@ const indy = {
     )
   },
 
+  async verifierVerifyProof(
+    proofRequest: IndyProofRequest,
+    proof: Proof,
+    schemas: Schemas,
+    credentialDefs: CredentialDefs,
+    revRegDef: ?RevRegDef,
+    revStates: RevStates
+  ): Promise<boolean> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return IndySdk.verifierVerifyProof(
+      JSON.stringify(proofRequest),
+      JSON.stringify(proof),
+      JSON.stringify(schemas),
+      JSON.stringify(credentialDefs),
+      revRegDef && JSON.stringify(revRegDef),
+      JSON.stringify(revStates)
+    )
+  },
+
   async appendTxnAuthorAgreementAcceptanceToRequest(
     request: LedgerRequest,
     text: string,
