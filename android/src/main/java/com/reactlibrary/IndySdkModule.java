@@ -788,6 +788,27 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void verifierVerifyProof(
+        String proofRequest, 
+        String proof, 
+        String schemas, 
+        String credentialDefs, 
+        String revocRegDefs, 
+        String revocRegs, 
+        Promise promise
+    ) {
+        try{
+            Boolean verified = Anoncreds.verifierVerifyProof(proofRequest, proof, schemas, credentialDefs, revocRegDefs, revocRegs).get();
+
+            promise.resolve(verified);
+        }
+        catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     // blob_storage
     
     @ReactMethod
