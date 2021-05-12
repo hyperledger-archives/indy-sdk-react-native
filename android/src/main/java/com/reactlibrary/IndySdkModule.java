@@ -760,6 +760,45 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void proverSearchCredentialsForProofReq(int walletHandle, String proofRequest, String extraQuery, Promise promise) {
+      try {
+            int searchHandle = credentialSearchIterator++; 
+            Wallet wallet = walletMap.get(walletHandle);
+            CredentialsSearchForProofReq search = CredentialsSearchForProofReq.open(wallet, proofRequest, extraQuery).get();
+            credentialSearchMap.put(searchHandle, search);
+            promise.resolve(searchHandle);
+      } catch (Exception e) {
+          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+      }
+    }
+
+    @ReactMethod
+    public void proverFetchCredentialsForProofReq(int searchHandle, String itemReferent, int count, Promise promise) {
+      try {
+          CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
+          String recordsJson = search.fetchNextCredentials(itemReferent, count).get();
+          promise.resolve(recordsJson);
+      } catch (Exception e) {
+          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+      }
+    }
+
+    @ReactMethod
+    public void proverCloseCredentialsSearchForProofReq(int searchHandle, Promise promise) {
+        try {
+            CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
+            search.close();
+            credentialSearchMap.remove(searchHandle);
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void proverCreateProof(
       int walletHandle,
 			String proofRequest,
@@ -940,45 +979,6 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             WalletSearch search = searchMap.get(walletSearchHandle);
             WalletSearch.closeSearch(search);
             searchMap.remove(walletSearchHandle);
-            promise.resolve(null);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
-    public void proverSearchCredentialsForProofReq(int walletHandle, String proofRequest, String extraQuery, Promise promise) {
-      try {
-            int searchHandle = credentialSearchIterator++; 
-            Wallet wallet = walletMap.get(walletHandle);
-            CredentialsSearchForProofReq search = CredentialsSearchForProofReq.open(wallet, proofRequest, extraQuery).get();
-            credentialSearchMap.put(searchHandle, search);
-            promise.resolve(searchHandle);
-      } catch (Exception e) {
-          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-      }
-    }
-
-    @ReactMethod
-    public void proverFetchCredentialsForProofReq(int searchHandle, String itemReferent, int count, Promise promise) {
-      try {
-          CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
-          String recordsJson = search.fetchNextCredentials(itemReferent, count).get();
-          promise.resolve(recordsJson);
-      } catch (Exception e) {
-          IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-          promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-      }
-    }
-
-    @ReactMethod
-    public void proverCloseCredentialsSearchForProofReq(int searchHandle, Promise promise) {
-        try {
-            CredentialsSearchForProofReq search = credentialSearchMap.get(searchHandle);
-            search.close();
-            credentialSearchMap.remove(searchHandle);
             promise.resolve(null);
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);

@@ -480,9 +480,6 @@ const indy = {
   },
 
   async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
-    }
     const [id, schema] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     return [id, JSON.parse(schema)]
   },
@@ -565,13 +562,6 @@ const indy = {
     )
   },
 
-  async proverGetCredentials(wh: WalletHandle, filter: {} = {}): Promise<Credential[]> {
-    if (Platform.OS === 'ios') {
-      return JSON.parse(await IndySdk.proverGetCredentials(JSON.stringify(filter), wh))
-    }
-    return JSON.parse(await IndySdk.proverGetCredentials(wh, JSON.stringify(filter)))
-  },
-
   async proverGetCredential(wh: WalletHandle, credId: CredId): Promise<Credential> {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndySdk.proverGetCredential(credId, wh))
@@ -579,8 +569,23 @@ const indy = {
     return JSON.parse(await IndySdk.proverGetCredential(wh, credId))
   },
 
+  // TODO: add proverDeleteCredential() method
+
+  // NOTE: This method is deprecated because immediately returns all fetched credentials. Use proverSearchCredentials() to fetch records by small batches.
+  async proverGetCredentials(wh: WalletHandle, filter: {} = {}): Promise<Credential[]> {
+    if (Platform.OS === 'ios') {
+      return JSON.parse(await IndySdk.proverGetCredentials(JSON.stringify(filter), wh))
+    }
+    return JSON.parse(await IndySdk.proverGetCredentials(wh, JSON.stringify(filter)))
+  },
+
+  // TODO: add proverSearchCredentials() method
+  // TODO: add proverFetchCredentials() method
+  // TODO: add proverCloseCredentialsSearch() method
+
   // TODO Add return flow type.
   // It needs little investigation, because is doesn't seem to be same format as Credential stored in wallet.
+  // NOTE: This method is deprecated because immediately returns all fetched credentials. proverSearchCredentialsForProofReq to fetch records by small batches.
   async proverGetCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest) {
     if (Platform.OS == 'ios') {
       return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(JSON.stringify(proofRequest), wh))
@@ -589,9 +594,6 @@ const indy = {
   },
 
   async proverSearchCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest, extraQuery: {}) {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return await IndySdk.proverSearchCredentialsForProofReq(
       wh,
       JSON.stringify(proofRequest),
@@ -600,16 +602,10 @@ const indy = {
   },
 
   async proverFetchCredentialsForProofReq(sh: number, itemReferent: string, count: number) {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return JSON.parse(await IndySdk.proverFetchCredentialsForProofReq(sh, itemReferent, count))
   },
 
   async proverCloseCredentialsSearchForProofReq(sh: number) {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return await IndySdk.proverCloseCredentialsSearchForProofReq(sh)
   },
 
