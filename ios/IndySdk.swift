@@ -389,10 +389,31 @@ class IndySdk : NSObject {
       IndyAnoncreds.proverGetCredentials(forProofReq: proofReqJSON, walletHandle: whNumber, completion: completionWithString(resolve, reject))
     }
     
+    @objc func proverSearchCredentialsForProofReq(_ walletHandle: NSNumber,proofReqJSON: String, extraQueryJSON: String,
+                                  resolver resolve: @escaping RCTPromiseResolveBlock,
+                                  rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      let whNumber:Int32  = Int32(truncating:walletHandle)
+      IndyAnoncreds.proverSearchCredentials(forProofRequest: proofReqJSON, extraQueryJSON: extraQueryJSON, walletHandle:whNumber, completion: completionWithIndyHandle(resolve, reject))
+    }
+
+    @objc func proverFetchCredentialsForProofReq(_ searchHandle:NSNumber, itemReferent: String, count: NSNumber, 
+                                  resolver resolve: @escaping RCTPromiseResolveBlock,
+                                  rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      let shNumber:Int32 = Int32(truncating: searchHandle)
+      IndyAnoncreds.proverFetchCredentials(forProofReqItemReferent: itemReferent, searchHandle: shNumber, count:count, completion: completionWithString(resolve, reject))
+    }
+
+    @objc func proverCloseCredentialsSearchForProofReq(_ searchHandle:NSNumber, 
+                                  resolver resolve: @escaping RCTPromiseResolveBlock,
+                                  rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      let shNumber:Int32 = Int32(truncating: searchHandle)
+      IndyAnoncreds.proverCloseCredentialsSearchForProofReq(withHandle: shNumber, completion: completion(resolve, reject))
+    }
+
     @objc func proverCreateProofForRequest(_ proofReqJSON: String, requestedCredentialsJSON: String, masterSecretID: String, schemasJSON: String, credentialDefsJSON: String, revocStatesJSON: String, walletHandle: NSNumber,
                                                resolver resolve: @escaping RCTPromiseResolveBlock,
                                                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(truncating:walletHandle)
+      let whNumber:Int32 = Int32(truncating:walletHandle)
       IndyAnoncreds.proverCreateProof(
         forRequest: proofReqJSON,
         requestedCredentialsJSON: requestedCredentialsJSON,
@@ -404,7 +425,7 @@ class IndySdk : NSObject {
         completion: completionWithString(resolve, reject)
       )
     }
-    
+
     // non_secret
     
     @objc func addWalletRecord(_ wh: NSNumber, type: String, id: String, value: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
