@@ -426,6 +426,20 @@ class IndySdk : NSObject {
       )
     }
 
+    @objc func verifierVerifyProof(_ proofReqJSON: String, proofJSON: String, schemasJSON: String, credentialDefsJSON: String, revocRegDefsJSON: String, revocRegsJSON: String, 
+                                              resolver resolve: @escaping RCTPromiseResolveBlock,
+                                              rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyAnoncreds.verifierVerifyProofRequest(
+        proofReqJSON,
+        proofJSON: proofJSON,
+        schemasJSON: schemasJSON,
+        credentialDefsJSON: credentialDefsJSON,
+        revocRegDefsJSON: revocRegDefsJSON,
+        revocRegsJSON: revocRegsJSON,
+        completion: completionWithBool(resolve, reject)
+      )
+    }
+
     // non_secret
     
     @objc func addWalletRecord(_ wh: NSNumber, type: String, id: String, value: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
