@@ -652,10 +652,6 @@ const indy = {
     revRegDef: ?RevRegDef,
     revStates: RevStates
   ): Promise<boolean> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
-
     return IndySdk.verifierVerifyProof(
       JSON.stringify(proofRequest),
       JSON.stringify(proof),

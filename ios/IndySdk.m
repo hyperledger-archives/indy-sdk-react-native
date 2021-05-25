@@ -258,6 +258,15 @@ RCT_EXTERN_METHOD(proverCreateProofForRequest: (NSString *)proofReqJSON
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(verifierVerifyProof: (NSString *)proofReqJSON
+                  proofJSON:(NSString *)proofJSON
+                  schemasJSON:(NSString *)schemasJSON
+                  credentialDefsJSON:(NSString *)credentialDefsJSON
+                  revocRegDefsJSON:(NSString *)revocRegDefsJSON
+                  revocRegsJSON:(NSString *)revocRegsJSON
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 // non_secrets
 RCT_EXTERN_METHOD(addWalletRecord: (nonnull NSNumber *)wh
                   type: (NSString *)type
