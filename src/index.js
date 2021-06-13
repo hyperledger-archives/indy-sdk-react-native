@@ -593,11 +593,12 @@ const indy = {
     return JSON.parse(await IndySdk.proverGetCredentialsForProofReq(wh, JSON.stringify(proofRequest)))
   },
 
-  async proverSearchCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest, extraQuery: {}) {
+  async proverSearchCredentialsForProofReq(wh: WalletHandle, proofRequest: ProofRequest, extraQuery: {} | null) {
+    //The NodeJS IndySDK wrapper differs from the Java and iOS wrappers in this call--it allows extraQuery to be a wql query object or null.
     return await IndySdk.proverSearchCredentialsForProofReq(
       wh,
       JSON.stringify(proofRequest),
-      JSON.stringify(extraQuery)
+      JSON.stringify(extraQuery ?? {})
     )
   },
 
