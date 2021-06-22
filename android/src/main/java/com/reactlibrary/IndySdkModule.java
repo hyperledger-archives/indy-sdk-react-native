@@ -152,6 +152,29 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void exportWallet(int walletHandle, String exportConfig, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            Wallet.exportWallet(wallet, exportConfig).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void importWallet(String config, String credentials, String importConfig, Promise promise) {
+        try {
+            Wallet.importWallet(config, credentials ,importConfig).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     // did
 
     @ReactMethod
