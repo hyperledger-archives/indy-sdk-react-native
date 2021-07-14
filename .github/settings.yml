@@ -4,13 +4,8 @@
 #
 
 repository:
-  name: fabric
-  description: Hyperledger Fabric is an enterprise-grade permissioned distributed
-    ledger framework for developing solutions and applications. Its modular and
-    versatile design satisfies a broad range of industry use cases. It offers
-    a unique approach to consensus that enables performance at scale while preserving
-    privacy.
-  homepage: https://wiki.hyperledger.org/display/fabric
+  name: indy-sdk-react-native
+  description: React Native wrapper around Indy SDK Java and Objective-C wrappers.
   default_branch: main
   has_downloads: true
   has_issues: true
