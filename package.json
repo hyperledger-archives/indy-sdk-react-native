@@ -1,5 +1,5 @@
 {
-  "name": "rn-indy-sdk",
+  "name": "indy-sdk-react-native",
   "title": "React Native Indy SDK Wrapper",
   "version": "0.1.11",
   "description": "React Native Indy SDK Wrapper",
@@ -13,8 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AbsaOSS/rn-indy-sdk.git",
-    "baseUrl": "https://github.com/AbsaOSS/rn-indy-sdk"
+    "url": "git+https://github.com/hyperledger/indy-sdk-react-native.git",
+    "baseUrl": "https://github.com/hyperledger/indy-sdk-react-native"
   },
   "keywords": [
     "react-native",
