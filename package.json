@@ -1,7 +1,7 @@
 {
   "name": "indy-sdk-react-native",
   "title": "React Native Indy SDK Wrapper",
-  "version": "0.1.11",
+  "version": "0.0.0",
   "description": "React Native Indy SDK Wrapper",
   "main": "lib/index.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "format": "prettier --write 'src/**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src/ -d lib/",
-    "prepublish": "yarn run build"
+    "prepublish": "yarn run build",
+    "release": "release-it"
   },
   "repository": {
     "type": "git",
@@ -41,7 +42,8 @@
     "husky": "^4.2.3",
     "prettier": "^2.0.3",
     "react": "^16.8.3",
-    "react-native": "^0.59.10"
+    "react-native": "^0.59.10",
+    "release-it": "^14.10.0"
   },
   "husky": {
     "hooks": {
@@ -50,5 +52,26 @@
   },
   "dependencies": {
     "buffer": "^6.0.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "skipChecks": true,
+      "ignoreVersion": true,
+      "tag": "latest"
+    },
+    "git": {
+      "push": false,
+      "commit": false,
+      "requireCommits": true,
+      "tagAnnotation": "${version}",
+      "requireBranch": "main"
+    }
   }
 }
