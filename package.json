@@ -42,7 +42,7 @@
     "husky": "^4.2.3",
     "prettier": "^2.0.3",
     "react": "^16.8.3",
-    "react-native": "^0.59.10",
+    "react-native": "^0.62.3",
     "release-it": "^14.10.0"
   },
   "husky": {
