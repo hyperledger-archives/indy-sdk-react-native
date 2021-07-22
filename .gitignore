@@ -42,7 +42,7 @@ buck-out/
 *.keystore
 
 # NPM package
-rn-indy-sdk-*.tgz
+indy-sdk-react-native-*.tgz
 
 # Build output
 lib
