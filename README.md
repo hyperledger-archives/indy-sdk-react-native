@@ -5,14 +5,14 @@ React Native Indy SDK wrapper.
 ## Installation
 
 with npm:
-`$ npm install rn-indy-sdk --save`
+`$ npm install indy-sdk-react-native --save`
 
 with Yarn:
-`$ yarn add rn-indy-sdk`
+`$ yarn add indy-sdk-react-native`
 
 Link (for React Native lower than 0.60)
 
-`$ react-native link rn-indy-sdk`
+`$ react-native link indy-sdk-react-native`
 
 ## Android
 
@@ -126,6 +126,7 @@ public class MainActivity extends ReactActivity {
 ## iOS
 
 1. Install CocoaPods dependencies:
+
 ```
 pod install --project-directory=ios/
 ```
@@ -139,14 +140,14 @@ ios/Pods/
 !ios/Pods/Frameworks
 ```
 
-4. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk. 
+4. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk.
 
-> Beware that the Indy SDK repository does not have the "Build Libraries for Distribution" enabled by default. If that setting is disabled the version of Swift your project uses must be the same as the version of Swift used to compile `Indy.framework`. From Swift 5.0 onwards, building the library with that setting enabled will allow to use an `Indy.framework` build that is compiled with a different version of Swift as your project. See  https://stackoverflow.com/a/63305234/10552895 for more info.
+> Beware that the Indy SDK repository does not have the "Build Libraries for Distribution" enabled by default. If that setting is disabled the version of Swift your project uses must be the same as the version of Swift used to compile `Indy.framework`. From Swift 5.0 onwards, building the library with that setting enabled will allow to use an `Indy.framework` build that is compiled with a different version of Swift as your project. See https://stackoverflow.com/a/63305234/10552895 for more info.
 
 ## Usage
 
 ```javascript
-import indy from 'rn-indy-sdk'
+import indy from 'indy-sdk-react-native'
 
 await indy.createWallet({ id: 'wallet-123' }, { key: 'key' })
 ```
