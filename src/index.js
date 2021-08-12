@@ -230,6 +230,20 @@ export type RevRegDef = {}
 
 export type RevRegId = string
 export type CredRevocId = string
+export type RevocRegDef = {
+  id: RevRegId;
+  revocDefType: 'CL_ACCUM';
+  tag: string;
+  credDefId: CredDefId;
+  value: {
+      issuanceType: 'ISSUANCE_BY_DEFAULT' | 'ISSUANCE_ON_DEMAND';
+      maxCredNum: number;
+      tailsHash: string;
+      tailsLocation: string;
+      publicKeys: string[];
+  };
+  ver: string;
+}
 export type RevocRegDelta = Record<string, unknown>
 export type TailsWriterConfig = {
   base_dir: string,
@@ -511,7 +525,7 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetRevocRegDefRequest(submitterDid, revocRegDefId))
   },
 
-  async parseGetRevocRegDefResponse(getRevocRegResponse: LedgerRequestResult): Promise<GetRevocRegDefResponse> {
+  async parseGetRevocRegDefResponse(getRevocRegResponse: LedgerRequestResult): Promise<[RevRegId, RevRegDef]> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
@@ -531,7 +545,7 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetRevocRegDeltaRequest(submitterDid, revocRegDefId, from, to))
   },
 
-  async parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse: string): Promise<[string, object]> {
+  async parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse: string): Promise<[RevRegId, RevocRegDelta, number]> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
