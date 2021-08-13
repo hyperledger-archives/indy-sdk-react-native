@@ -191,8 +191,8 @@ export type CredentialDefs = {
  */
 export type RevStates = {
   [key: string]: {
-    [key: string]: unknown
-  }
+    [key: string]: unknown,
+  },
 }
 
 /**
@@ -231,18 +231,18 @@ export type RevRegDef = {}
 export type RevRegId = string
 export type CredRevocId = string
 export type RevocRegDef = {
-  id: RevRegId;
-  revocDefType: 'CL_ACCUM';
-  tag: string;
-  credDefId: CredDefId;
+  id: RevRegId,
+  revocDefType: 'CL_ACCUM',
+  tag: string,
+  credDefId: CredDefId,
   value: {
-      issuanceType: 'ISSUANCE_BY_DEFAULT' | 'ISSUANCE_ON_DEMAND';
-      maxCredNum: number;
-      tailsHash: string;
-      tailsLocation: string;
-      publicKeys: string[];
-  };
-  ver: string;
+    issuanceType: 'ISSUANCE_BY_DEFAULT' | 'ISSUANCE_ON_DEMAND',
+    maxCredNum: number,
+    tailsHash: string,
+    tailsLocation: string,
+    publicKeys: string[],
+  },
+  ver: string,
 }
 export type RevocRegDelta = Record<string, unknown>
 export type TailsWriterConfig = {
