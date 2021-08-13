@@ -519,16 +519,10 @@ const indy = {
   },
 
   async buildGetRevocRegDefRequest(submitterDid: Did | null, revocRegDefId: string): Promise<LedgerRequest> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return JSON.parse(await IndySdk.buildGetRevocRegDefRequest(submitterDid, revocRegDefId))
   },
 
   async parseGetRevocRegDefResponse(getRevocRegResponse: LedgerRequestResult): Promise<[RevRegId, RevRegDef]> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     const [revocRegDefId, revocRegDef] = await IndySdk.parseGetRevocRegDefResponse(JSON.stringify(getRevocRegResponse))
     return [revocRegDefId, JSON.parse(revocRegDef)]
   },
@@ -539,16 +533,10 @@ const indy = {
     from: number = 0,
     to: number = new Date().getTime()
   ): Promise<LedgerRequest> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return JSON.parse(await IndySdk.buildGetRevocRegDeltaRequest(submitterDid, revocRegDefId, from, to))
   },
 
   async parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse: string): Promise<[RevRegId, RevocRegDelta, number]> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     const [revocRegId, revocRegDelta, timestamp] = await IndySdk.parseGetRevocRegDeltaResponse(
       JSON.stringify(getRevocRegDeltaResponse)
     )
@@ -861,9 +849,6 @@ const indy = {
     timestamp: number,
     credRevId: string
   ): Promise<any> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return JSON.parse(
       await IndySdk.createRevocationState(blobStorageReaderHandle, revRegDef, revRegDelta, timestamp, credRevId)
     )
@@ -872,10 +857,6 @@ const indy = {
   // blob_storage
 
   async openBlobStorageReader(type: string, tailsWriterConfig: TailsWriterConfig): Promise<BlobReaderHandle> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
-
     return JSON.parse(await IndySdk.openBlobStorageReader(type, JSON.stringify(tailsWriterConfig)))
   },
 }

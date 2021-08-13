@@ -176,6 +176,22 @@ RCT_EXTERN_METHOD(parseGetCredDefResponse: (NSString *)getCredDefResponse
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(buildGetRevocRegDefRequest: (NSString *)submitterDid id:(NSString *)id
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(parseGetRevocRegDefResponse: (NSString *)getCredDefResponse
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(buildGetRevocRegDeltaRequest: (NSString *)submitterDid id:(NSString *)id from:(nonnull NSNumber *)from to:(nonnull NSNumber *)to
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(parseGetRevocRegDeltaResponse: (NSString *)getRevocRegDeltaResponse
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(buildGetAttribRequest: (nullable NSString *)submitterDid
                   targetDid:(NSString *)targetDid
                   raw:(nullable NSString *)raw
@@ -267,6 +283,14 @@ RCT_EXTERN_METHOD(verifierVerifyProof: (NSString *)proofReqJSON
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(createRevocationState: (nonnull NSNumber *)blobStorageReaderHandle
+                  revRegDef:(NSString *)revRegDef
+                  revRegDelta:(NSString *)revRegDelta
+                  timestamp:(nonnull NSNumber *)timestamp
+                  credRevId:(NSString *)credRevId
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 // non_secrets
 RCT_EXTERN_METHOD(addWalletRecord: (nonnull NSNumber *)wh
                   type: (NSString *)type
@@ -340,6 +364,13 @@ RCT_EXTERN_METHOD(fetchWalletSearchNextRecords: (nonnull NSNumber *)wh
                   )
 
 RCT_EXTERN_METHOD(closeWalletSearch: (nonnull NSNumber *)sh
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+// Blob Storage
+RCT_EXTERN_METHOD(openBlobStorageReader: (NSString *)type
+                  config: (NSString *)config
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
