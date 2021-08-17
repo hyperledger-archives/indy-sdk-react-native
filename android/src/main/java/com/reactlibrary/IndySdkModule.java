@@ -617,6 +617,63 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
+
+    @ReactMethod
+    public void buildGetRevocRegDefRequest(String submitterDid, String revocRegDefId, Promise promise) {
+        try {
+            String request = Ledger.buildGetRevocRegDefRequest(submitterDid, revocRegDefId).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void parseGetRevocRegDefResponse(String response, Promise promise) {
+        try{
+            LedgerResults.ParseResponseResult ledgerResult = Ledger.parseGetRevocRegDefResponse(response).get();
+            WritableArray result = new WritableNativeArray();
+            result.pushString(ledgerResult.getId());
+            result.pushString(ledgerResult.getObjectJson());
+            promise.resolve(result);
+        } catch(Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetRevocRegDeltaRequest(
+        String submitterDid,
+        String revocRegDefId,
+        int from,
+        int to,
+        Promise promise
+    ){
+        try{
+            String request = Ledger.buildGetRevocRegDeltaRequest(submitterDid,revocRegDefId,from,to).get();
+            promise.resolve(request);
+        }catch(Exception e) { 
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void parseGetRevocRegDeltaResponse(String getRevocRegDeltaResponse, Promise promise){
+        try{
+            LedgerResults.ParseRegistryResponseResult ledgerResult = Ledger.parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse).get();
+            WritableArray result = new WritableNativeArray();
+            result.pushString(ledgerResult.getId());
+            result.pushString(ledgerResult.getObjectJson());
+            result.pushInt((int) ledgerResult.getTimestamp());
+            promise.resolve(result);
+        }catch(Exception e){
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
     
     // anoncreds
 
@@ -843,6 +900,24 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             promise.resolve(verified);
         }
         catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void createRevocationState(
+        int blobStorageReaderHandle,
+        String revRegDef,
+        String revRegDelta,
+        int timestamp,
+        String credRevId,
+        Promise promise
+    ){
+        try{
+            String result = Anoncreds.createRevocationState(blobStorageReaderHandle,revRegDef,revRegDelta,timestamp,credRevId).get();
+            promise.resolve(result);
+        }catch(Exception e){
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
