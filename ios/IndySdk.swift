@@ -301,6 +301,40 @@ class IndySdk : NSObject {
                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
       IndyLedger.parseGetCredDefResponse(getCredDefResponse, completion: completionWithStringPair(resolve, reject))
     }
+
+    @objc func buildGetRevocRegDefRequest(_ submitterDid: String, id: String,
+                                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.buildGetRevocRegDefRequest(
+        withSubmitterDid: !submitterDid.isEmpty ? submitterDid : nil,
+        id: id,
+        completion: completionWithString(resolve, reject)
+      )
+    }
+    
+    @objc func parseGetRevocRegDefResponse(_ getRevocRegDefResponse: String,
+                                       resolver resolve: @escaping RCTPromiseResolveBlock,
+                                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.parseGetRevocRegDefResponse(getRevocRegDefResponse, completion: completionWithStringPair(resolve, reject))
+    }
+    
+    @objc func buildGetRevocRegDeltaRequest(_ submitterDid: String, id: String, from: NSNumber, to: NSNumber,
+                                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.buildGetRevocRegDeltaRequest(
+        withSubmitterDid: !submitterDid.isEmpty ? submitterDid : nil,
+        revocRegDefId: id,
+        from: from,
+        to: to,
+        completion: completionWithString(resolve, reject)
+      )
+    }
+    
+    @objc func parseGetRevocRegDeltaResponse(_ getRevocRegDeltaResponse: String,
+                                       resolver resolve: @escaping RCTPromiseResolveBlock,
+                                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse, completion: completionWithStringPairAndNumber(resolve, reject))
+    }
     
     @objc func buildGetAttribRequest(_ submitterDid: String?,
                                     targetDid: String,
@@ -440,6 +474,19 @@ class IndySdk : NSObject {
       )
     }
 
+    @objc func createRevocationState(_ blobStorageReaderHandle: NSNumber, revRegDef: String, revRegDelta: String, timestamp: NSNumber, credRevId: String, 
+                                              resolver resolve: @escaping RCTPromiseResolveBlock,
+                                              rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyAnoncreds.createRevocationState(
+        forCredRevID: credRevId,
+        timestamp: timestamp,
+        revRegDefJSON: revRegDef,
+        revRegDeltaJSON: revRegDelta,
+        blobStorageReaderHandle: blobStorageReaderHandle,
+        completion: completionWithString(resolve, reject)
+      )
+    }
+
     // non_secret
     
     @objc func addWalletRecord(_ wh: NSNumber, type: String, id: String, value: String, tags: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
@@ -492,6 +539,14 @@ class IndySdk : NSObject {
         let shNumber:Int32 = Int32(truncating: sh)
         IndyNonSecrets.closeSearch(withHandle: shNumber, completion: completion(resolve, reject))
     }
+
+
+    // Blob Storage
+
+    @objc func openBlobStorageReader(_ type: String, config: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        IndyBlobStorage.openReader(withType: type, config: config, completion: completionWithNumber(resolve, reject))
+    }
+
     
     // completion functions
     
@@ -610,10 +665,38 @@ class IndySdk : NSObject {
       
       return completion
     }
+
+    func completionWithStringPairAndNumber(_ resolve: @escaping RCTPromiseResolveBlock,
+                                  _ reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?, _ string1: String?, _ string2: String?, _ number1: NSNumber?) -> Void {
+      func completion(error: Error?,  string1: String?, string2: String?, number1: NSNumber?) -> Void {
+        let code = (error! as NSError).code
+        if code != 0 {
+          reject("\(code)", createJsonError(error!, code), error)
+        } else {
+          resolve([string1, string2, number1])
+        }
+      }
+      
+      return completion
+    }
     
     func completionWithString(_ resolve: @escaping RCTPromiseResolveBlock,
                               _ reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?, _ result: String?) -> Void {
       func completion(error: Error?,  result: String?) -> Void {
+        let code = (error! as NSError).code
+        if code != 0 {
+          reject("\(code)", createJsonError(error!, code), error)
+        } else {
+          resolve(result)
+        }
+      }
+      
+      return completion
+    }
+    
+    func completionWithNumber(_ resolve: @escaping RCTPromiseResolveBlock,
+                              _ reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?, _ result: NSNumber?) -> Void {
+      func completion(error: Error?,  result: NSNumber?) -> Void {
         let code = (error! as NSError).code
         if code != 0 {
           reject("\(code)", createJsonError(error!, code), error)

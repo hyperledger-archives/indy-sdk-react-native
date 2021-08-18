@@ -564,61 +564,6 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void buildGetAttribRequest(String submitterDid, String targetDid, String raw, String hash, String enc, Promise promise) {
-        try {
-            String request = Ledger.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc).get();
-            promise.resolve(request);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
-    public void buildGetNymRequest(String submitterDid, String targetDid, Promise promise) {
-        try {
-            String request = Ledger.buildGetNymRequest(submitterDid, targetDid).get();
-            promise.resolve(request);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
-    public void parseGetNymResponse(String response, Promise promise) {
-        try {
-            String parsedResponse = Ledger.parseGetNymResponse(response).get();
-            promise.resolve(parsedResponse);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
-    public void appendTxnAuthorAgreementAcceptanceToRequest(String requestJson, String text, String version, String taaDigest, String mechanism, int time, Promise promise) {
-        try {
-            String request = Ledger.appendTxnAuthorAgreementAcceptanceToRequest(requestJson, text, version, taaDigest, mechanism, time).get();
-            promise.resolve(request);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
-    public void buildGetTxnAuthorAgreementRequest(String submitterDid, String data, Promise promise) {
-        try {
-            String request = Ledger.buildGetTxnAuthorAgreementRequest(submitterDid, data).get();
-            promise.resolve(request);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
-    @ReactMethod
     public void buildGetRevocRegDefRequest(String submitterDid, String revocRegDefId, Promise promise) {
         try {
             String request = Ledger.buildGetRevocRegDefRequest(submitterDid, revocRegDefId).get();
@@ -674,6 +619,62 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
+
+    @ReactMethod
+    public void buildGetAttribRequest(String submitterDid, String targetDid, String raw, String hash, String enc, Promise promise) {
+        try {
+            String request = Ledger.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetNymRequest(String submitterDid, String targetDid, Promise promise) {
+        try {
+            String request = Ledger.buildGetNymRequest(submitterDid, targetDid).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void parseGetNymResponse(String response, Promise promise) {
+        try {
+            String parsedResponse = Ledger.parseGetNymResponse(response).get();
+            promise.resolve(parsedResponse);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void appendTxnAuthorAgreementAcceptanceToRequest(String requestJson, String text, String version, String taaDigest, String mechanism, int time, Promise promise) {
+        try {
+            String request = Ledger.appendTxnAuthorAgreementAcceptanceToRequest(requestJson, text, version, taaDigest, mechanism, time).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetTxnAuthorAgreementRequest(String submitterDid, String data, Promise promise) {
+        try {
+            String request = Ledger.buildGetTxnAuthorAgreementRequest(submitterDid, data).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     
     // anoncreds
 
