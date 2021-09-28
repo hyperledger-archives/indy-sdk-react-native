@@ -473,6 +473,11 @@ class IndySdk : NSObject {
         completion: completionWithBool(resolve, reject)
       )
     }
+    
+    @objc func generateNonce(_ resolve: @escaping RCTPromiseResolveBlock,
+                             rejecter reject: @escaping RCTPromiseRejectBlock) {
+      IndyAnoncreds.generateNonce(completionWithString(resolve, reject));
+    }
 
     @objc func createRevocationState(_ blobStorageReaderHandle: NSNumber, revRegDef: String, revRegDelta: String, timestamp: NSNumber, credRevId: String, 
                                               resolver resolve: @escaping RCTPromiseResolveBlock,
