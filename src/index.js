@@ -707,7 +707,7 @@ const indy = {
   },
 
   async generateNonce() {
-    return IndySdk.generateNonce();
+    return IndySdk.generateNonce()
   },
 
   async appendTxnAuthorAgreementAcceptanceToRequest(
