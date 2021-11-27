@@ -707,9 +707,6 @@ const indy = {
   },
 
   async generateNonce() {
-    if (Platform.OS === 'android') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
     return IndySdk.generateNonce();
   },
 
