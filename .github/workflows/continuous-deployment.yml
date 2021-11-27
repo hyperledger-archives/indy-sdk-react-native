@@ -7,6 +7,9 @@ on:
         description: The type of release. Should be one of "major", "minor", "patch"
         required: true
         default: 'patch'
+  pull_request:
+    branches:
+      - main
 
 # Make sure we're not running multiple release steps at the same time as this can give issues with determining the next npm version to release.
 # Ideally we only add this to the 'release' job so it doesn't limit PR runs, but github can't guarantee the job order in that case:
