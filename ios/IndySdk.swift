@@ -208,7 +208,7 @@ class IndySdk : NSObject {
         IndyCrypto.verifySignature(signatureData, forMessage: messageData, key: signerVk, completion: completionWithBool(resolve, reject))
     }
     
-    @objc func packMessage(_ wh: NSNumber, message: Array<UInt8>, receiverKeys: String, senderVk: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc func packMessage(_ wh: NSNumber, message: Array<UInt8>, receiverKeys: String, senderVk: String?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let whNumber = Int32(truncating: wh)
         let messageData = Data(message)
         IndyCrypto.packMessage(messageData, receivers: receiverKeys, sender: senderVk, walletHandle: whNumber, completion: completionWithData(resolve, reject))
