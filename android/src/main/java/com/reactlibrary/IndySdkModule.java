@@ -426,57 +426,73 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openPoolLedger(String configName, String poolConfig, Promise promise) {
-        try {
-            if (poolNameToHandleMap.get(configName) != null){
-                promise.resolve(poolNameToHandleMap.get(configName));
+    public void openPoolLedger(final String configName, final String poolConfig, final Promise promise) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    if (poolNameToHandleMap.get(configName) != null){
+                        promise.resolve(poolNameToHandleMap.get(configName));
 
-            } else {
-                Pool pool = Pool.openPoolLedger(configName, poolConfig).get();
-                poolMap.put(pool.getPoolHandle(), pool);
-                poolNameToHandleMap.put(configName, pool.getPoolHandle());
-                promise.resolve(pool.getPoolHandle());
+                    } else {
+                        Pool pool = Pool.openPoolLedger(configName, poolConfig).get();
+                        poolMap.put(pool.getPoolHandle(), pool);
+                        poolNameToHandleMap.put(configName, pool.getPoolHandle());
+                        promise.resolve(pool.getPoolHandle());
+                    }
+                } catch (Exception e) {
+                    IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+                    promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+                }
             }
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
+        }, "openPoolLedger").start();
     }
 
     @ReactMethod
-    public void closePoolLedger(int handle, Promise promise) {
-        try {
-            Pool pool = poolMap.get(handle);
-            pool.closePoolLedger().get();
-            poolMap.remove(handle);
+    public void closePoolLedger(final int handle, final Promise promise) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    Pool pool = poolMap.get(handle);
+                    pool.closePoolLedger().get();
+                    poolMap.remove(handle);
 
-            // Remove pool id mapping
-            for (Map.Entry<String, Integer> entry : poolNameToHandleMap.entrySet()) {
-                if (entry.getValue().equals(handle)) {
-                    poolNameToHandleMap.remove(entry.getKey());
-                    break;
+                    // Remove pool id mapping
+                    for (Map.Entry<String, Integer> entry : poolNameToHandleMap.entrySet()) {
+                        if (entry.getValue().equals(handle)) {
+                            poolNameToHandleMap.remove(entry.getKey());
+                            break;
+                        }
+                    }
+
+                    promise.resolve(null);
+                } catch (Exception e) {
+                    IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+                    promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
                 }
             }
-            
-            promise.resolve(null);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
+        }, "closePoolLedger").start();
     }
 
     // ledger
 
     @ReactMethod
-    public void submitRequest(int poolHandle, String requestJson, Promise promise) {
-        try {
-            Pool pool = poolMap.get(poolHandle);
-            String response = Ledger.submitRequest(pool, requestJson).get();
-            promise.resolve(response);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
+    public void submitRequest(final int poolHandle, final String requestJson, final Promise promise) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    Pool pool = poolMap.get(poolHandle);
+                    String response = Ledger.submitRequest(pool, requestJson).get();
+                    promise.resolve(response);
+                } catch (Exception e) {
+                    IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+                    promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+                }
+            }
+
+        }, "submitRequest").start();
     }
 
     @ReactMethod
