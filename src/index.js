@@ -413,7 +413,12 @@ const indy = {
     return IndySdk.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
   },
 
-  async packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string): Promise<Buffer> {
+  async packMessage(
+    wh: WalletHandle,
+    message: Buffer,
+    receiverKeys: Verkey[],
+    senderVk: string | null
+  ): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       return Buffer.from(await IndySdk.packMessage(wh, Array.from(message), JSON.stringify(receiverKeys), senderVk))
     }
