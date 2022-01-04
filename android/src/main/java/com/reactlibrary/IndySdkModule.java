@@ -791,6 +791,18 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void proverDeleteCredential(int walletHandle, String credId, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            Anoncreds.proverDeleteCredential(wallet, credId).get();
+            promise.resolve(null);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void proverGetCredential(int walletHandle, String credId, Promise promise) {
         try {
             Wallet wallet = walletMap.get(walletHandle);

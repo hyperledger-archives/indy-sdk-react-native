@@ -415,6 +415,13 @@ class IndySdk : NSObject {
       let whNumber:Int32  = Int32(truncating:walletHandle)
       IndyAnoncreds.proverGetCredential(withId: credId, walletHandle: whNumber, completion: completionWithString(resolve, reject))
     }
+
+    @objc func proverDeleteCredential(_ credId: String, walletHandle: NSNumber,
+                                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      let whNumber:Int32  = Int32(truncating:walletHandle)
+      IndyAnoncreds.proverDeleteCredential(withId: credId, walletHandle: whNumber, completion: completionWithString(resolve, reject))
+    }
     
     @objc func proverGetCredentialsForProofReq(_ proofReqJSON: String, walletHandle: NSNumber,
                                    resolver resolve: @escaping RCTPromiseResolveBlock,

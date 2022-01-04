@@ -241,6 +241,10 @@ RCT_EXTERN_METHOD(proverGetCredential: (NSString *)credId walletHandle:(nonnull 
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(proverDeleteCredential: (NSString *)credId walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(proverGetCredentialsForProofReq: (NSString *)proofReqJSON walletHandle:(nonnull NSNumber *)walletHandle
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
