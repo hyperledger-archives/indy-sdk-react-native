@@ -619,7 +619,7 @@ const indy = {
 
   async proverDeleteCredential(wh: WalletHandle, credId: CredId): Promise<void> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndySdk.proverDeleteCredential(credId, wh))
+      return JSON.parse(await IndySdk.proverDeleteCredentials(credId, wh))
     }
     return JSON.parse(await IndySdk.proverDeleteCredential(wh, credId))
   },
