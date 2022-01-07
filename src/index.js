@@ -853,13 +853,19 @@ const indy = {
 
   async createRevocationState(
     blobStorageReaderHandle: BlobReaderHandle,
-    revRegDef: string,
-    revRegDelta: string,
+    revRegDef: RevocRegDef,
+    revRegDelta: RevocRegDelta,
     timestamp: number,
     credRevId: string
   ): Promise<any> {
     return JSON.parse(
-      await IndySdk.createRevocationState(blobStorageReaderHandle, revRegDef, revRegDelta, timestamp, credRevId)
+      await IndySdk.createRevocationState(
+        blobStorageReaderHandle,
+        JSON.stringify(revRegDef),
+        JSON.stringify(revRegDelta),
+        timestamp,
+        credRevId
+      )
     )
   },
 
