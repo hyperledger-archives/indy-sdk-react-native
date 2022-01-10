@@ -619,9 +619,9 @@ const indy = {
 
   async proverDeleteCredential(wh: WalletHandle, credId: CredId): Promise<void> {
     if (Platform.OS === 'ios') {
-      return JSON.parse(await IndySdk.proverDeleteCredential(credId, wh))
+      return await IndySdk.proverDeleteCredential(credId, wh)
     }
-    return JSON.parse(await IndySdk.proverDeleteCredential(wh, credId))
+    return await IndySdk.proverDeleteCredential(wh, credId)
   },
 
   // NOTE: This method is deprecated because immediately returns all fetched credentials. Use proverSearchCredentials() to fetch records by small batches.
