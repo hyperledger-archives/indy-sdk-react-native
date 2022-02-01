@@ -539,7 +539,9 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetRevocRegDeltaRequest(submitterDid, revocRegDefId, from, to))
   },
 
-  async parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse: LedgerRequestResult): Promise<[RevRegId, RevocRegDelta, number]> {
+  async parseGetRevocRegDeltaResponse(
+    getRevocRegDeltaResponse: LedgerRequestResult
+  ): Promise<[RevRegId, RevocRegDelta, number]> {
     const [revocRegId, revocRegDelta, timestamp] = await IndySdk.parseGetRevocRegDeltaResponse(
       JSON.stringify(getRevocRegDeltaResponse)
     )
