@@ -335,7 +335,26 @@ class IndySdk : NSObject {
                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
       IndyLedger.parseGetRevocRegDeltaResponse(getRevocRegDeltaResponse, completion: completionWithStringPairAndNumber(resolve, reject))
     }
+
+
+    @objc func buildGetRevocRegDeltaRequest(_ submitterDid: String, id: String, timestamp: NSNumber,
+                                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.buildGetRevocRegRequest(
+        withSubmitterDid: !submitterDid.isEmpty ? submitterDid : nil,
+        revocRegDefId: id,
+        timestamp: timestamp,
+        completion: completionWithString(resolve, reject)
+      )
+    }
     
+    @objc func parseGetRevocRegResponse(_ getRevocRegResponse: String,
+                                       resolver resolve: @escaping RCTPromiseResolveBlock,
+                                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.parseGetRevocRegResponse(getRevocRegResponse, completion: completionWithStringPairAndNumber(resolve, reject))
+    }
+    
+
     @objc func buildGetAttribRequest(_ submitterDid: String?,
                                     targetDid: String,
                                     raw: String?,

@@ -192,6 +192,14 @@ RCT_EXTERN_METHOD(parseGetRevocRegDeltaResponse: (NSString *)getRevocRegDeltaRes
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(buildGetRevocRegRequest: (NSString *)submitterDid id:(NSString *)id timestamp:(nonnull NSNumber *)timestamp
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(parseGetRevocRegResponse: (NSString *)getRevocRegResponse
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(buildGetAttribRequest: (nullable NSString *)submitterDid
                   targetDid:(NSString *)targetDid
                   raw:(nullable NSString *)raw
