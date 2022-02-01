@@ -240,7 +240,7 @@ export type RevocRegDef = {
   ver: string,
 }
 export type RevocRegDefs = {
-  [revRegId: string]: RevocRegDef
+  [revRegId: string]: RevocRegDef,
 }
 export type RevocRegDelta = Record<string, unknown>
 export type TailsWriterConfig = {
