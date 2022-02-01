@@ -223,11 +223,6 @@ interface CredValue {
  */
 export type CredReqMetadata = {}
 
-/**
- * Json - revocation registry definition json related to <rev_reg_def_id> in <cred_json>
- */
-export type RevRegDef = {}
-
 export type RevRegId = string
 export type CredRevocId = string
 export type RevocRegDef = {
@@ -243,6 +238,9 @@ export type RevocRegDef = {
     publicKeys: string[],
   },
   ver: string,
+}
+export type RevocRegDefs = {
+  [revRegId: string]: RevocRegDef
 }
 export type RevocRegDelta = Record<string, unknown>
 export type TailsWriterConfig = {
@@ -527,7 +525,7 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetRevocRegDefRequest(submitterDid, revocRegDefId))
   },
 
-  async parseGetRevocRegDefResponse(getRevocRegResponse: LedgerRequestResult): Promise<[RevRegId, RevRegDef]> {
+  async parseGetRevocRegDefResponse(getRevocRegResponse: LedgerRequestResult): Promise<[RevRegId, RevocRegDef]> {
     const [revocRegDefId, revocRegDef] = await IndySdk.parseGetRevocRegDefResponse(JSON.stringify(getRevocRegResponse))
     return [revocRegDefId, JSON.parse(revocRegDef)]
   },
@@ -546,6 +544,21 @@ const indy = {
       JSON.stringify(getRevocRegDeltaResponse)
     )
     return [revocRegId, JSON.parse(revocRegDelta), timestamp]
+  },
+
+  async buildGetRevocRegRequest(
+    submitterDid: Did | null,
+    revocRegDefId: string,
+    timestamp: number
+  ): Promise<LedgerRequest> {
+    return JSON.parse(await IndySdk.buildGetRevocRegRequest(submitterDid, revocRegDefId, timestamp))
+  },
+
+  async parseGetRevocRegResponse(getRevocRegResponse: string): Promise<[RevRegId, RevocReg, number]> {
+    const [revocRegId, revocReg, ledgerTimestamp] = await IndySdk.parseGetRevocRegResponse(
+      JSON.stringify(getRevocRegResponse)
+    )
+    return [revocRegId, JSON.parse(revocReg), ledgerTimestamp]
   },
 
   async proverCreateMasterSecret(wh: WalletHandle, masterSecretId: ?MasterSecretId): Promise<MasterSecretId> {
@@ -584,11 +597,11 @@ const indy = {
 
   proverStoreCredential(
     wh: WalletHandle,
-    credId: CredId,
+    credId: CredId | null,
     credReqMetadata: CredReqMetadata,
     cred: Cred,
     credDef: CredDef,
-    revRegDef: ?RevRegDef
+    revRegDef: RevocRegDef | null
   ): Promise<CredId> {
     if (Platform.OS === 'ios') {
       return IndySdk.proverStoreCredential(
@@ -703,7 +716,7 @@ const indy = {
     proof: Proof,
     schemas: Schemas,
     credentialDefs: CredentialDefs,
-    revRegDef: ?RevRegDef,
+    revRegDefs: RevocRegDefs,
     revStates: RevStates
   ): Promise<boolean> {
     return IndySdk.verifierVerifyProof(
@@ -711,7 +724,7 @@ const indy = {
       JSON.stringify(proof),
       JSON.stringify(schemas),
       JSON.stringify(credentialDefs),
-      revRegDef && JSON.stringify(revRegDef),
+      JSON.stringify(revRegDefs),
       JSON.stringify(revStates)
     )
   },

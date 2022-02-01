@@ -637,6 +637,37 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void buildGetRevocRegRequest(
+        String submitterDid,
+        String revocRegDefId,
+        int timestamp,
+        Promise promise
+    ){
+        try{
+            String request = Ledger.buildGetRevocRegRequest(submitterDid,revocRegDefId,timestamp).get();
+            promise.resolve(request);
+        }catch(Exception e) { 
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void parseGetRevocRegResponse(String getRevocRegResponse, Promise promise){
+        try{
+            LedgerResults.ParseRegistryResponseResult ledgerResult = Ledger.parseGetRevocRegResponse(getRevocRegResponse).get();
+            WritableArray result = new WritableNativeArray();
+            result.pushString(ledgerResult.getId());
+            result.pushString(ledgerResult.getObjectJson());
+            result.pushInt((int) ledgerResult.getTimestamp());
+            promise.resolve(result);
+        }catch(Exception e){
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void buildGetAttribRequest(String submitterDid, String targetDid, String raw, String hash, String enc, Promise promise) {
         try {
             String request = Ledger.buildGetAttribRequest(submitterDid, targetDid, raw, hash, enc).get();
