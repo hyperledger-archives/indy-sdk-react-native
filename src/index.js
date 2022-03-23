@@ -307,6 +307,14 @@ const indy = {
     return IndySdk.deleteWallet(JSON.stringify(config), JSON.stringify(credentials))
   },
 
+  exportWallet(wh: WalletHandle, exportConfig: Object): Promise<void> {
+    return IndySdk.exportWallet(wh, JSON.stringify(exportConfig))
+  },
+
+  importWallet(config: Object, credentials: Object, importConfig: Object): Promise<void> {
+    return IndySdk.importWallet(JSON.stringify(config), JSON.stringify(credentials), JSON.stringify(importConfig))
+  },
+
   // did
 
   /**
