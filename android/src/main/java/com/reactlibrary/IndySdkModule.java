@@ -279,6 +279,19 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void createKey(int walletHandle, String key, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String verkey = Crypto.createKey(wallet, key).get();
+            Log.i(TAG, verkey);
+            promise.resolve(verkey);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void cryptoAnonCrypt(String theirKey, ReadableArray message, Promise promise) {
         try {
             byte[] buffer = readableArrayToBuffer(message);
