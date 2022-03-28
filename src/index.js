@@ -381,6 +381,13 @@ const indy = {
 
   // crypto
 
+  async createKey(wh: WalletHandle, key: Object): Promise<string> {
+    if (Platform.OS === 'ios') {
+      return IndySdk.createKey(JSON.stringify(key), wh)
+    }
+    return IndySdk.createKey(wh, JSON.stringify(key))
+  },
+
   async cryptoAnonCrypt(recipientVk: Verkey, messageRaw: Buffer): Promise<Buffer> {
     if (Platform.OS === 'ios') {
       return IndySdk.cryptoAnonCrypt(messageRaw, recipientVk)

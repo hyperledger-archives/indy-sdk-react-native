@@ -165,6 +165,13 @@ class IndySdk : NSObject {
     }
     
     // crypto
+
+    @objc func createKey(_ key: String, walletHandle: NSNumber,
+                         resolver resolve: @escaping RCTPromiseResolveBlock,
+                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      let whNumber:Int32  = Int32(truncating:walletHandle)
+      IndyCrypto.createKey(key, walletHandle: whNumber, completion: completionWithString(resolve, reject))
+    }
     
     @objc func cryptoAnonCrypt(_ message: String, theirKey: String!,
                                resolver resolve: @escaping RCTPromiseResolveBlock,

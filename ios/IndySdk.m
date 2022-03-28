@@ -93,6 +93,11 @@ RCT_EXTERN_METHOD(getPairwise: (NSString *)theirDid walletHandle:(nonnull NSNumb
                   rejecter:(RCTPromiseRejectBlock)reject)
 
 // crypto
+RCT_EXTERN_METHOD(createKey: (NSString *)key
+                  walletHandle:(nonnull NSNumber *)walletHandle
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(cryptoAnonCrypt: (NSString *)message theirKey:(NSString *)theirKey
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
@@ -101,7 +106,10 @@ RCT_EXTERN_METHOD(cryptoAnonDecrypt: (NSArray *)encryptedMessage myKey:(NSString
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(cryptoAuthCrypt: (NSString *)message myKey:(NSString *)myKey theirKey:(NSString *)theirKey walletHandle:(nonnull NSNumber *)walletHandle
+RCT_EXTERN_METHOD(cryptoAuthCrypt: (NSString *)message
+                  myKey:(NSString *)myKey
+                  theirKey:(NSString *)theirKey
+                  walletHandle:(nonnull NSNumber *)walletHandle
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
