@@ -283,7 +283,6 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         try {
             Wallet wallet = walletMap.get(walletHandle);
             String verkey = Crypto.createKey(wallet, key).get();
-            Log.i(TAG, verkey);
             promise.resolve(verkey);
         } catch (Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
