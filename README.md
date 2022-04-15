@@ -131,7 +131,7 @@ public class MainActivity extends ReactActivity {
 pod install --project-directory=ios/
 ```
 
-2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy `Indy.framework` into that directory.
+2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy [`Indy.framework`](https://github.com/hyperledger/aries-mobile-agent-react-native/tree/main/app/ios/Pods/Frameworks) into that directory. The most recent version of the `Indy.Framework` can be found [here](https://github.com/hyperledger/aries-mobile-agent-react-native/tree/main/app/ios/Pods/Frameworks).
 
 3. [Optional] Most projects have `ios/Pods` ignored in their `.gitignore`. This is good practice, however this means the framework would need to be added after every clone. To prevent this you can "unignore" the Frameworks directory:
 
