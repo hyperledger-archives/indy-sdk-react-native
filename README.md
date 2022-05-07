@@ -68,19 +68,19 @@ Download Android libindy binaries and copy them into `android/app/src/main/jniLi
 1. Create `android/app/src/main/jniLibs` directory in your project
 2. Create subdirectories `arm64-v8a`, `armeabi-v7a`, `x86` and `x86_64` inside `android/app/src/main/jniLibs`.
 3. Download the required libindy binaries for your release-channel and version
-   - with `stable` channel and version `1.15.0` base url will be https://repo.sovrin.org/android/libindy/stable/1.15.0/
+   - with `stable` channel and version `1.16.0` base url will be https://repo.sovrin.org/android/libindy/stable/1.16.0/
    - download the binaries for `arm64`, `armv7`, `x86` and `x86_64`, e.g.:
-     - `libindy_android_arm64_1.15.0.zip`
-     - `libindy_android_armv7_1.15.0.zip`
-     - `libindy_android_x86_1.15.0.zip`
-     - `libindy_android_x86_64_1.15.0.zip`
+     - `libindy_android_arm64_1.16.0.zip`
+     - `libindy_android_armv7_1.16.0.zip`
+     - `libindy_android_x86_1.16.0.zip`
+     - `libindy_android_x86_64_1.16.0.zip`
 4. Extract all downloaded ZIP files and copy `libindy.so` files to corresponding `jniLibs` directory
    - `libindy_arm64/lib/libindy.so` to `jniLibs/arm64-v8a/libindy.so`
    - `libindy_armv7/lib/libindy.so` to `jniLibs/armeabi-v7a/libindy.so`
    - `libindy_x86/lib/libindy.so` to `jniLibs/x86/libindy.so`
    - `libindy_x86_64/lib/libindy.so` to `jniLibs/x86_64/libindy.so`
 5. Download the required JNA binaries from the [JNA GitHub repo](https://github.com/java-native-access/jna)
-   - libindy version 1.15.0 works with version 5.5.0 of JNA. In this case the base url is: https://github.com/java-native-access/jna/tree/5.5.0/lib/native
+   - libindy version 1.16.0 works with version 5.5.0 of JNA. In this case the base url is: https://github.com/java-native-access/jna/tree/5.5.0/lib/native
    - download the binaries for `aarch64`, `armv7`, `x86`, `x86-64`, e.g.:
      - `android-aarch64.jar`
      - `android-armv7.jar`
