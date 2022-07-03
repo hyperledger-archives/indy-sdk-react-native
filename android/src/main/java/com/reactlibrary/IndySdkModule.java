@@ -1012,6 +1012,17 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void generateWalletKey(String configJson, Promise promise) {
+        try {
+            String walletKey = Wallet.generateWalletKey(configJson).get();
+            promise.resolve(walletKey);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void createRevocationState(
         int blobStorageReaderHandle,
         String revRegDef,

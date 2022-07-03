@@ -750,6 +750,10 @@ const indy = {
     return IndySdk.generateNonce()
   },
 
+  async generateWalletKey(config?: { seed?: string } = {}) {
+    return IndySdk.generateWalletKey(JSON.stringify(config))
+  },
+
   async appendTxnAuthorAgreementAcceptanceToRequest(
     request: LedgerRequest,
     text: string,
