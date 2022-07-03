@@ -306,6 +306,10 @@ RCT_EXTERN_METHOD(verifierVerifyProof: (NSString *)proofReqJSON
 RCT_EXTERN_METHOD(generateNonce: (RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(generateWalletKey: (NSString *) configJson
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(createRevocationState: (nonnull NSNumber *)blobStorageReaderHandle
                   revRegDef:(NSString *)revRegDef
                   revRegDelta:(NSString *)revRegDelta
