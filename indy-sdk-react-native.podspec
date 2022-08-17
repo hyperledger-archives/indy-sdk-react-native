@@ -36,6 +36,7 @@ Pod::Spec.new do |s|
   s.swift_version = '4.2'
 
   s.dependency "React"
+  s.dependency "Indy"
   # ...
   # s.dependency "..."
 

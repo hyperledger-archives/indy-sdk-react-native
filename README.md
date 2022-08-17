@@ -131,18 +131,11 @@ public class MainActivity extends ReactActivity {
 pod install --project-directory=ios/
 ```
 
-2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy [`Indy.framework`](https://github.com/hyperledger/aries-mobile-agent-react-native/tree/main/app/ios/Pods/Frameworks) into that directory. The most recent version of the `Indy.Framework` can be found [here](https://github.com/hyperledger/aries-mobile-agent-react-native/tree/main/app/ios/Pods/Frameworks).
+2. Add the following line to the start of your Podfile (`ios/Podfile`):
 
-3. [Optional] Most projects have `ios/Pods` ignored in their `.gitignore`. This is good practice, however this means the framework would need to be added after every clone. To prevent this you can "unignore" the Frameworks directory:
-
-```.gitignore
-ios/Pods/
-!ios/Pods/Frameworks
 ```
-
-4. Add `Indy.framework` as dependency into your project. Open `.xcworkspace` file in Xcode and in your project settings, tab General, section Frameworks, Libraries, and Embedded Content, click on plus. Then select Add Other -> Add files... and navigate to `Indy.framework` file on your disk.
-
-> Beware that the Indy SDK repository does not have the "Build Libraries for Distribution" enabled by default. If that setting is disabled the version of Swift your project uses must be the same as the version of Swift used to compile `Indy.framework`. From Swift 5.0 onwards, building the library with that setting enabled will allow to use an `Indy.framework` build that is compiled with a different version of Swift as your project. See https://stackoverflow.com/a/63305234/10552895 for more info.
+source 'https://github.com/AbsaOSS/dlt-cocoapods-specs.git'
+```
 
 ## Usage
 
