@@ -507,9 +507,15 @@ class IndySdk : NSObject {
       )
     }
     
-    @objc func generateNonce(_ resolve: @escaping RCTPromiseResolveBlock,
-                             rejecter reject: @escaping RCTPromiseRejectBlock) {
+    @objc func generateNonce(_ resolve: @escaping RCTPromiseResolveBlock, 
+            rejecter reject: @escaping RCTPromiseRejectBlock) {
       IndyAnoncreds.generateNonce(completionWithString(resolve, reject));
+    }
+
+    @objc func generateWalletKey(_ configJson: String,
+                             resolver resolve: @escaping RCTPromiseResolveBlock,
+                             rejecter reject: @escaping RCTPromiseRejectBlock) {
+      IndyWallet.generateKey(forConfig: configJson, completion: completionWithString(resolve, reject));
     }
 
     @objc func createRevocationState(_ blobStorageReaderHandle: NSNumber, revRegDef: String, revRegDelta: String, timestamp: NSNumber, credRevId: String, 
