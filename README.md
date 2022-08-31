@@ -104,7 +104,6 @@ Add the following to `MainActivity.java`:
 import android.os.Bundle;
 import android.system.ErrnoException;
 import android.system.Os;
-import java.io.File;
 
 public class MainActivity extends ReactActivity {
   //...
@@ -123,6 +122,31 @@ public class MainActivity extends ReactActivity {
 }
 ```
 
+### 6. Hermes
+
+Hermes is required in order to perform ledger operations using the Indy SDK.
+
+> For more info, see [this Indy-SDK issue](https://github.com/hyperledger/indy-sdk/issues/2346#issuecomment-841000640).
+
+#### React Native >= 0.70.0
+
+Hermes is enabled by default
+
+#### React Native 0.62.0 - 0.69.5
+
+Add or adjust the following in the `android/app/build.gradle` to:
+
+```gradle
+project.ext.react = [
+    enableHermes: true,  // clean and rebuild if changing
+]
+```
+
+#### React Native <= 0.61.5
+
+Hermes is not required for older versions of React Native
+
+
 ## iOS
 
 1. Install CocoaPods dependencies:
@@ -134,8 +158,16 @@ pod install --project-directory=ios/
 2. Add the following line to the start of your Podfile (`ios/Podfile`):
 
 ```
-source 'https://github.com/AbsaOSS/dlt-cocoapods-specs.git'
+source 'https://github.com/hyperledger/indy-sdk-react-native'
 ```
+
+3. Configure Bitcode to `no` in both the project and targets
+
+4. Set `Build Libraries for Distribution` to `yes` in both the project and targets
+
+> This is required due to mismatching Swift versions between the Indy SDK and the application, as described in this [Stackoverflow Answer](https://stackoverflow.com/questions/58654714/module-compiled-with-swift-5-1-cannot-be-imported-by-the-swift-5-1-2-compiler/63305234#63305234)
+
+5. iOS Simulators are currently not supported and should be disabled
 
 ## Usage
 
