@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary;
+package org.hyperledger.indy.sdk.reactnative;
 
 import java.util.Arrays;
 import java.util.Collections;
