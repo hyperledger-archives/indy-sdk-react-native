@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary;
+package org.hyperledger.indy.sdk.reactnative;
 
 import android.annotation.TargetApi;
 import android.util.Log;
