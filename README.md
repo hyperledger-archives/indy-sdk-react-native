@@ -149,16 +149,18 @@ Hermes is not required for older versions of React Native
 
 ## iOS
 
-1. Install CocoaPods dependencies:
-
-```
-pod install --project-directory=ios/
-```
-
-2. Add the following line to the start of your Podfile (`ios/Podfile`):
+1. Add the following line to the start of your Podfile (`ios/Podfile`):
 
 ```
 source 'https://github.com/hyperledger/indy-sdk-react-native'
+```
+
+2. Install the Latest CocoaPods dependencies:
+
+```
+cd ios
+pod install
+pod update Indy
 ```
 
 3. Configure Bitcode to `no` in both the project and targets
