@@ -158,7 +158,8 @@ source 'https://github.com/hyperledger/indy-sdk-react-native'
 2. Install the Latest CocoaPods dependencies:
 
 ```
-pod install --project-directory=ios/
+cd ios
+pod install
 pod update Indy
 ```
 
