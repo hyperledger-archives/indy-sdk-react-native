@@ -146,13 +146,15 @@ project.ext.react = [
 
 Hermes is not required for older versions of React Native
 
-
 ## iOS
 
-1. Add the following line to the start of your Podfile (`ios/Podfile`):
+1. Add the following lines to the start of your Podfile (`ios/Podfile`).
+
+If a custom `source` is defined we also need to define the default source (which is implicit if no source is specified), explicitly:
 
 ```
 source 'https://github.com/hyperledger/indy-sdk-react-native'
+source 'https://cdn.cocoapods.org'
 ```
 
 2. Install the Latest CocoaPods dependencies:
