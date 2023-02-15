@@ -276,6 +276,17 @@ class IndySdk : NSObject {
       let phNumber:Int32  = Int32(truncating:poolHandle)
       IndyLedger.submitRequest(requestJSON, poolHandle: phNumber, completion: completionWithString(resolve, reject))
     }
+
+    @objc func buildGetTxnRequest(_ submitterDid: String, ledgerType: String, seqNo: NSNumber,
+                                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+      IndyLedger.buildGetTxnRequest(
+        withSubmitterDid: !submitterDid.isEmpty ? submitterDid : nil,
+        ledgerType: ledgerType,
+        data: seqNo,
+        completion: completionWithString(resolve, reject)
+      )
+    }
     
     @objc func buildGetSchemaRequest(_ submitterDid: String, id: String,
                                       resolver resolve: @escaping RCTPromiseResolveBlock,
