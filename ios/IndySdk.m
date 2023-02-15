@@ -168,6 +168,12 @@ RCT_EXTERN_METHOD(submitRequest: (NSString *)requestJSON poolHandle:(nonnull NSN
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(buildGetTxnRequest: (NSString *)submitterDid
+                  ledgerType:(NSString *)ledgerType
+                  seqNo:(nonnull NSNumber *)seqNo
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(buildGetSchemaRequest: (NSString *)submitterDid id:(NSString *)id
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

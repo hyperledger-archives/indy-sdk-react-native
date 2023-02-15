@@ -497,6 +497,14 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetSchemaRequest(submitterDid, id))
   },
 
+  async buildGetTxnRequest(
+    submitterDid: Did,
+    ledgerType: 'DOMAIN' | 'POOL' | 'CONFIG',
+    seqNo: number
+  ): Promise<LedgerRequest> {
+    return JSON.parse(await IndySdk.buildGetTxnRequest(submitterDid, ledgerType, seqNo))
+  },
+
   async buildGetAttribRequest(
     submitterDid: Did | null,
     targetDid: Did,

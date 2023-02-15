@@ -543,6 +543,17 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void buildGetTxnRequest(String submitterDid, String ledgerType, int seqNo, Promise promise) {
+        try {
+            String request = Ledger.buildGetTxnRequest(submitterDid, ledgerType, seqNo).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void buildSchemaRequest(String submitterDid, String data, Promise promise) {
         try {
             String request = Ledger.buildSchemaRequest(submitterDid, data).get();
