@@ -1,3 +1,25 @@
+# Indy SDK - Deprecated
+![logo](https://raw.githubusercontent.com/hyperledger/indy-node/master/collateral/logos/indy-logo.png)
+
+## :warning: Deprecation Notice :warning:
+The Indy SDK has been deprecated in favor of the Indy and Aries shared libraries.  Please use the following libraries and projects to replace your use of the Indy SDK.
+
+### [indy-vdr](https://github.com/hyperledger/indy-vdr)
+A module for interacting with the [Indy Node](https://github.com/hyperledger/indy-node) ledger.
+
+### [aries-askar](https://github.com/hyperledger/aries-askar)
+A secure (encrypted at rest) storage and a key management service suitable for use with [Hyperledger Aries] agents and possibly other digital trust agents.  Askar is a replacement implementation (with lessons learned!) of the [indy-wallet] part of the [Hyperledger Indy SDK]. Askar has been demonstrated to be more performant and stable than the Indy SDK when under comparable load.
+
+### [anoncreds-rs](https://github.com/hyperledger/anoncreds-rs)
+Rust library and reference implementation of the [Anoncreds V1.0 specification](https://hyperledger.github.io/anoncreds-spec/).  Supporting ledger agnostic anoncreds.
+
+### [indy-cli-rs](https://github.com/hyperledger/indy-cli-rs)
+The a feature parity replacement for the `indy-cli` from the `indy-sdk`.
+
+[Hyperledger Aries]: https://www.hyperledger.org/projects/aries
+[indy-wallet]: https://github.com/hyperledger/indy-sdk/tree/main/libindy/indy-wallet
+[Hyperledger Indy SDK]: https://github.com/hyperledger/indy-sdk
+
 # React Native Indy SDK
 
 React Native Indy SDK wrapper.
